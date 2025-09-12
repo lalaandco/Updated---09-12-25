@@ -60,9 +60,9 @@ $isLoggedIn = isset($_SESSION["email"]);
                     <div class="box-img">
                         <img src="images/ForHim.png">
                     </div>
-                    <h3>Cnalb Tnom</h3>
+                    <h3>DER ETSOCAL</h3>
                     <div class="inbox">
-                        <span class="price">₱360.00</span>
+                        <span class="price">₱299.00</span>
                     
                     </div>
                 </div>
@@ -73,9 +73,9 @@ $isLoggedIn = isset($_SESSION["email"]);
                     <div class="box-img">
                         <img src="images/ForHim.png">
                     </div>
-                    <h3>Cnalb Tnom</h3>
+                    <h3>EGAVUAS ROID</h3>
                     <div class="inbox">
-                        <span class="price">₱360.00</span>
+                        <span class="price">₱299.00</span>
                     
                     </div>
                 </div>
@@ -86,9 +86,9 @@ $isLoggedIn = isset($_SESSION["email"]);
                     <div class="box-img">
                         <img src="images/ForHim.png">
                     </div>
-                    <h3>Cnalb Tnom</h3>
+                    <h3>AUGUST</h3>
                     <div class="inbox">
-                        <span class="price">₱360.00</span>
+                        <span class="price">₱299.00</span>
                     
                     </div>
                 </div>
@@ -99,9 +99,9 @@ $isLoggedIn = isset($_SESSION["email"]);
                     <div class="box-img">
                         <img src="images/ForHim.png">
                     </div>
-                    <h3>Cnalb Tnom</h3>
+                    <h3>BILL</h3>
                     <div class="inbox">
-                        <span class="price">₱360.00</span>
+                        <span class="price">₱299.00</span>
                     
                     </div>
                 </div>
@@ -112,9 +112,9 @@ $isLoggedIn = isset($_SESSION["email"]);
                     <div class="box-img">
                         <img src="images/ForHim.png">
                     </div>
-                    <h3>Cnalb Tnom</h3>
+                    <h3>JAMES</h3>
                     <div class="inbox">
-                        <span class="price">₱360.00</span>
+                        <span class="price">₱299.00</span>
                     
                     </div>
                 </div>
@@ -125,9 +125,9 @@ $isLoggedIn = isset($_SESSION["email"]);
                     <div class="box-img">
                         <img src="images/ForHim.png">
                     </div>
-                    <h3>Cnalb Tnom</h3>
+                    <h3>JOE</h3>
                     <div class="inbox">
-                        <span class="price">₱360.00</span>
+                        <span class="price">₱299.00</span>
                     
                     </div>
                 </div>
@@ -138,9 +138,9 @@ $isLoggedIn = isset($_SESSION["email"]);
                     <div class="box-img">
                         <img src="images/ForHim.png">
                     </div>
-                    <h3>Cnalb Tnom</h3>
+                    <h3>DREW</h3>
                     <div class="inbox">
-                        <span class="price">₱360.00</span>
+                        <span class="price">₱299.00</span>
                     
                     </div>
                 </div>
@@ -151,9 +151,9 @@ $isLoggedIn = isset($_SESSION["email"]);
                     <div class="box-img">
                         <img src="images/ForHim.png">
                     </div>
-                    <h3>Cnalb Tnom</h3>
+                    <h3>JOHN</h3>
                     <div class="inbox">
-                        <span class="price">₱360.00</span>
+                        <span class="price">₱299.00</span>
                     
                     </div>
                 </div>

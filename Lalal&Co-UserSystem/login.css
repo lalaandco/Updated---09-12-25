@@ -48,6 +48,15 @@ button{
     z-index: 1000;           /* Stays on top of other elements */
     left: 40%;
 }
+.toggle-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 18px;
+  
+}
 
 
 /* Form box styles */
@@ -81,7 +90,8 @@ input[name="name"],
 input[name="address"],
 input[name="contact-number"],
 input[type="email"],
-input[type="password"] {
+input[type="password"],
+input[type="text"] {
     width: 100%;
     padding: 20px;  
     margin: 5px 0;
@@ -95,7 +105,8 @@ input[name="name"]:focus,
 input[name="address"]:focus,
 input[name="contact-number"]:focus,
 input[type="email"]:focus,
-input[type="password"]:focus {
+input[type="password"]:focus,
+input[type="text"]:focus {
     border-color: #c19a6b; 
     box-shadow: 0 0 5px rgba(193,154,107,0.5);
     outline: none; 

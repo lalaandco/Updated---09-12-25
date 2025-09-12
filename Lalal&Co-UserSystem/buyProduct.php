@@ -41,7 +41,7 @@ $isLoggedIn = isset($_SESSION["email"]);
           <span class="muted">Shipping:</span> <?= $_SESSION['address']?>
         </div>
       <?php if ($isLoggedIn): ?>
-        <button class="btn" onclick="handleAddToBag()">Add to Bag</button>
+        <button class="btn" onclick="thatLoggedIn()">Add to Bag</button>
           <p class="note" ><?= $_SESSION['product_description']?></p>  
       <?php else: ?>
           <button class="btn" onclick="handleAddToBag()">Add to Bag</button>

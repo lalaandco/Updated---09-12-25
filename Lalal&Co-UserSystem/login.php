@@ -82,6 +82,7 @@
                     <?= showError($error['login']); ?>
                     <input type="email" name="email" placeholder="Email"><br>
                     <input type="password" name="password" placeholder="Password"><br>
+                    <span id="togglePassword" class="bx bx-show toggle-icon" onclick="showPassword()"></span>
                     <input type="submit" value="Log In" name="login"><br>
                     <h2 class="or"><span>OR</span></h2>
                     <div class="social-icons">

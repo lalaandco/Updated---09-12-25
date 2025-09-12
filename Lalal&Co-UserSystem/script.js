@@ -15,3 +15,21 @@ window.addEventListener('scroll', function() {
 localStorage.setItem('isLoggedIn', 'true');
 
 localStorage.removeItem('isLoggedIn');
+
+function showPassword() {
+    const passwordInput = document.querySelector('input[name="password"]');
+    const toggleIcon = document.getElementById('togglePassword');
+    
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleIcon.classList.remove('bx-show');
+        toggleIcon.classList.add('bx-hide');
+    } else {
+        passwordInput.type = "password";
+        toggleIcon.classList.remove('bx-hide');
+        toggleIcon.classList.add('bx-show');
+    }
+}
+
+
+
