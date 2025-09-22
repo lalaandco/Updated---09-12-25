@@ -1,0 +1,345 @@
+
+html,body {
+    margin: 0;
+    background: linear-gradient(135deg, #d4c4b0 0%, #e8ddd0 50%, #c9b8a8 100%);
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    color: #333;
+    overflow: auto; /* scrolling works */
+    scrollbar-width: none; /* for Firefox */
+    -ms-overflow-style: none; 
+    user-select: none;
+    overflow: hidden;
+
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* darkens the background */
+    z-index: 999; /* ensure it's above everything else */
+    
+}
+
+button{
+    pointer-events: none; /* Allow blocking of clicks */
+    cursor: not-allowed;
+}
+
+/* Sticky/fixed login container */
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    position: fixed;         /* Keeps it at the top */
+    top: 5%;                  /* Position from the top */
+    left: 0;
+    width: 100%;             /* Full width */
+    z-index: 1000;           /* Stays on top of other elements */
+    left: 40%;
+}
+
+
+/* Form box styles */
+.form-box {
+    opacity: 0;
+    transform: translateY(-20px); /* start slightly above */
+    transition: opacity 0.5s ease, transform 1s ease;
+    height: 0; /* hide space when inactive */
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.form-box.active {
+    opacity: 1;
+    transform: translateY(0); /* slide into place */
+    height: auto;
+    pointer-events: all; 
+}
+
+h2 {
+    text-align: center;
+    color: #7b5e57;
+    font-size: 22px;
+    color: #6b4f3a; /* warm dark brown */
+    letter-spacing: 1px;
+    font-size: 30px;
+}
+
+
+input[name="name"],
+input[name="address"],
+input[name="contact-number"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 20px;  
+    margin: 5px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+input[name="name"]:focus,
+input[name="address"]:focus,
+input[name="contact-number"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #c19a6b; 
+    box-shadow: 0 0 5px rgba(193,154,107,0.5);
+    outline: none; 
+    
+}
+input[name="name"]:focus::placeholder,
+input[name="address"]:focus::placeholder,
+input[name="contact-number"]:focus::placeholder,
+input[type="email"]:focus::placeholder,
+input[type="email"]:focus::placeholder,
+input[type="password"]:focus::placeholder{
+    transform: translateY(-35px);
+    transition: transform 0.3s ease;
+}
+
+input[name="name"]:not(:focus)::placeholder,
+input[type="email"]:not(:focus)::placeholder,
+input[type="password"]:not(:focus)::placeholder{
+    transition: transform 0.3s ease;
+}
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 40px; /* space for the icon */
+    box-sizing: border-box;
+}
+
+.password-wrapper .toggle-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+    color: #888;
+}
+
+
+
+input[type="submit"] {
+    display: block;        
+    margin: 10px auto 0;
+    width: 105px;
+    background-color: #c19a6b;
+    color: #fff;
+    padding: 20px;
+    border: none;
+    border-radius: 15px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    
+}
+
+input[type="submit"]:hover {
+    background-color: #a07855;
+    background: #a67c52;
+}
+
+p {
+    text-align: center;
+    margin-top: 15px;
+}
+
+a {
+    color: #66bfa6;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.error-message {
+  background-color: #fff4e5;   /* Warm light beige */
+  color: #8b4513;              /* Rich brown */
+  border: 1px solid #f0c987;   /* Muted gold border */
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+
+.success-message {
+  background-color: #e6f4ea;   /* Light green */
+  color: #1b5e20;              /* Deep green text */
+  border: 1px solid #a5d6a7;   /* Soft green border */
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+
+/* Center wrapper for welcome box */
+.center-wrapper {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.box {
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+
+
+    
+
+.box p {
+    font-size: 22cpx;
+}
+
+.box button {
+    display: block;
+    width: 100px;
+    margin: 20px auto 0;
+    background-color: #66bfa6;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.box button:hover {
+    background-color: #4ca88d;
+    transform: translateY(-2px);
+}
+
+#homepage_title{
+    height: 80px;
+    padding-left: 25%;
+
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    border-bottom: 5px solid #d4b48c; 
+    padding: 15px 0;
+
+}
+
+.logo img {
+    max-width: 150px;
+    height: auto;
+    display: block;
+    margin: 0 auto 10px;
+    
+}
+
+
+.or {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0;
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.or::before,
+.or::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #bfbfbf;
+    opacity: 0.9;
+}
+
+.or span {
+    padding: 0 12px;
+    color: #333;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    
+}
+.social-icons a {
+    text-decoration: none;
+    color: #000;
+    font-size: 16px;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    background-color: #e0c9a6;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    padding: 10px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: 100;
+    font-size: 12px;
+    margin-left: 2px;
+    border-radius: 2px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.social-icons a:hover{
+    background: #d4b48c; 
+    transform: scale(1.1);
+    transition: 0.3s ease;
+}
+
+.social-icons a i {
+    margin-right: 8px;  
+    font-size: 20px;
+}
+
+.back-button a{
+    font-size: 40px;
+}
+
+
+
+
+

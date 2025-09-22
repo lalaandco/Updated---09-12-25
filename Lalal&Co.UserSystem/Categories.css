@@ -1,0 +1,173 @@
+.product-contents {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 3rem;
+    align-items: stretch;
+    margin-top: 5rem;
+    max-width: 2000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.product {
+    padding: 140px 90px;
+}
+
+.product-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 3rem;
+    align-items: stretch;
+    margin-top: 5rem;
+    max-width: 1300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Product link wrapper - makes entire product clickable */
+.product-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+    transition: all 0.3s ease;
+    border-radius: 20px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.product-link:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+}
+
+.box {
+    position: relative;
+    padding: 25px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.box-img {
+    position: relative;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    border-radius: 15px;
+}
+
+.box-img img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.product-link:hover .box-img img {
+    transform: scale(1.05);
+}
+
+.box h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    line-height: 1.2;
+    color: #333;
+    flex-grow: 1;
+}
+
+.inbox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    gap: 1rem;
+}
+
+.price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #e74c3c;
+    background: transparent;
+    border: 2px solid #e74c3c;
+    padding: 8px 16px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+.product-link:hover .price {
+    background: #e74c3c;
+    color: white;
+    transform: scale(1.05);
+}
+
+.categories {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Updated category styling with underline effect */
+.select-category {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.select-category a {
+    margin: 0 1rem;
+    background-color: none;
+    color: #000;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+/* Remove default underline */
+.category-link {
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+/* Create animated underline effect */
+.category-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: #e74c3c; /* Match your price color */
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+/* Show underline when active */
+.category-link.active::after {
+    width: 100%;
+}
+
+/* Optional: Show underline on hover */
+.category-link:hover::after {
+    width: 100%;
+}
+
+/* Optional: Change text color when active */
+.category-link.active {
+    color: #e74c3c;
+    font-weight: 600;
+}
+
