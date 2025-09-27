@@ -171,6 +171,9 @@ $page = $_GET['page'] ?? '';
             elseif($page === 'cart') {
                 include __DIR__ . '/AddToCart.php';
             }
+            elseif($page === 'editProfile') {
+                include __DIR__ . '/edit.php';
+            }
             
           
             ?>
