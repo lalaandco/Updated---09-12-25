@@ -11,7 +11,7 @@ $isLoggedIn = isset($_SESSION["email"]);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($_SESSION['product_name'] ?? 'Product') ?> - La Gal & Co.</title>
-    <link rel="stylesheet" href="buyingProduct.css">
+    <link rel="stylesheet" href=buyingProduct.css">
     <style>
         body {
             padding-top: 120px;
