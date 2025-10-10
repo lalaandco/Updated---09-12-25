@@ -2,12 +2,17 @@
     $isLoggedIn = isset($_SESSION["email"]);
     $page = $_GET['page'] ?? '';
 ?>
-<link rel="stylesheet" href="index.css">
+<link rel="stylesheet" href="forIndex.css">
+<style>
+    .dropdown {
+        margin-top: 40px;
+    }
+</style>
 <section id="mainheader-section">
     <header class="header">
         <?php if ($isLoggedIn): ?>
             <div class="welcome-user">
-                <h1 id="welcome" >Welcome, <span><?= strtoupper($_SESSION['name']); ?></span></h1>
+                <h1 id="welcome" style="font">Welcome, <span><?= strtoupper($_SESSION['name']); ?></span></h1>
             </div>
         <?php endif; ?>
         
@@ -78,19 +83,17 @@
 
                         <!-- Dropdown info -->
                         <div class="dropdown">
-                            <a href="edit.php"><strong>Edit Profile</strong></a>
                             <div><strong>Name:</strong> <?= $_SESSION["name"] ?? "Guest"; ?></div>
                             <div><strong>Address:</strong> <?= $_SESSION["address"] ?? "No Address"; ?></div>
                             <div><strong>Contact Number:</strong> <?= $_SESSION["contact-number"] ?? "00000000000"; ?></div>
                             <div><strong>Email:</strong> <?= $_SESSION["email"] ?? "Guest@gmail.com"; ?></div>
                             <div class="logout-container">
-                                <a href="php/logout.php" class="logout">Logout</a>
-                            </div>
+                                    <a href="logout.php" class="logout">Logout</a>
+                                </div>
                         </div>
                     </div>
                 <?php else: ?>
-                    <!-- Guest login link -->
-                    <a href="php/login.php">
+                    <a href="login.php">
                         <div class="icon">
                             <svg viewBox="0 0 24 24">
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 
@@ -105,11 +108,14 @@
                     </a>
                 <?php endif; ?>
 
-                <div class="icon">
-                    <svg viewBox="0 0 24 24">   
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
+                    <a href="my_orders.php<?php if ($isLoggedIn) echo '?page=orders'; ?>">
+                        <div class="icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                                <path d="M3 3h13v13H3V3zm15 3h3l1 4v6h-2a2 2 0 0 1-4 0h-2a2 2 0 0 1-4 0H7a2 2 0 0 1-4 0H1V3h2v13h1a2 2 0 0 1 4 0h2a2 2 0 0 1 4 0h2a2 2 0 0 1 4 0h1v-5.5L20 6z"/>
+                            </svg>
+                        </div>
+                    </a>
+
                 
                     <a href="AddToCart.php">
                         <div class="icon cart-icon">
@@ -121,6 +127,28 @@
                     </a>
             </div>
         </div>
+
+        <section id="content-section">
+        <div class="content">
+            <?php
+            // show login/register fragment inside the content area when requested
+            $page = $_GET['page'] ?? '';
+            if ($page === 'login') {
+                include __DIR__ . '/login.php';
+            } 
+            elseif($page === 'cart') {
+                include __DIR__ . '/AddToCart.php';
+            }
+            elseif($page === 'editProfile') {
+                include __DIR__ . '/edit.php';
+            }
+            
+          
+            ?>
+        </div>
+        </section>
+
+
          <?php if ($isLoggedIn): ?>
     <script>
         // Toggle dropdown when clicking user icon

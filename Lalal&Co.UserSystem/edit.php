@@ -8,6 +8,15 @@ if (!isset($_SESSION['email'])) {
     exit;
 }
 
+if (basename($_SERVER['PHP_SELF']) == 'edit.php') {
+        header("Location: header.php?page=editProfile");
+        exit;
+    }
+if (!isset($_SESSION['email'])) {
+    header('Location: header.php');
+    exit;
+}
+
 // Database connection
 try {
     $pdo = new PDO("mysql:host=localhost;dbname=users_db", "root", "");
@@ -213,30 +222,32 @@ $email = $_SESSION['email'] ?? '';
             <?php endif; ?>
 
             <form method="POST" action="index.php?page=editProfile">
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" value="<?= htmlspecialchars($name) ?>" required>
-                </div>
+                <form method="POST" action="header.php?page=editProfile">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" value="<?= htmlspecialchars($name) ?>" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="address">Address</label>
-                    <input type="text" id="address" name="address" value="<?= htmlspecialchars($address) ?>" required>
-                </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" name="address" value="<?= htmlspecialchars($address) ?>" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="contact">Contact Number</label>
-                    <input type="text" id="contact" name="contact" value="<?= htmlspecialchars($contact) ?>" required>
-                </div>
+                    <div class="form-group">
+                        <label for="contact">Contact Number</label>
+                        <input type="text" id="contact" name="contact" value="<?= htmlspecialchars($contact) ?>" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" value="<?= htmlspecialchars($email) ?>" class="email-field" disabled>
-                </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" value="<?= htmlspecialchars($email) ?>" class="email-field" disabled>
+                    </div>
 
-                <div class="buttons">
-                    <a href="index.php" class="back-btn">Back</a>
-                    <button type="submit">Save Changes</button>
-                </div>
+                    <div class="buttons">
+                        <a href="index.php" class="back-btn">Back</a>
+                        <button type="submit">Save Changes</button>
+                    </div>
+                </form>
             </form>
         </div>
     </div>
