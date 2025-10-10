@@ -1,10 +1,38 @@
 <?php
 session_start();
-
-require_once 'productConfig.php'; // This sets $_SESSION['product_name'], etc.
+require_once 'config.php'; // Load config first
+require_once 'productConfig.php'; // This will use the same $conn
 $isLoggedIn = isset($_SESSION["email"]);
-?>
 
+// Get product stock from database
+$product_stock = 0;
+if (isset($_GET['id'])) {
+    $product_id = $_GET['id']; // Keep as string to handle both numeric and string IDs
+    
+    // Try forhim_tbl first
+    $stock_stmt = $conn->prepare("SELECT product_quantity FROM forhim_tbl WHERE product_id = ?");
+    $stock_stmt->bind_param("s", $product_id);
+    $stock_stmt->execute();
+    $stock_result = $stock_stmt->get_result();
+    
+    if ($stock_row = $stock_result->fetch_assoc()) {
+        $product_stock = intval($stock_row['product_quantity']);
+    } else {
+        // If not found in forhim_tbl, try forher_tbl
+        $stock_stmt->close();
+        $stock_stmt = $conn->prepare("SELECT product_quantity FROM forher_tbl WHERE product_id = ?");
+        $stock_stmt->bind_param("s", $product_id);
+        $stock_stmt->execute();
+        $stock_result = $stock_stmt->get_result();
+        
+        if ($stock_row = $stock_result->fetch_assoc()) {
+            $product_stock = intval($stock_row['product_quantity']);
+        }
+    }
+    
+    $stock_stmt->close();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,35 +51,39 @@ $isLoggedIn = isset($_SESSION["email"]);
             padding: 20px;
         }
         
-        .btn {
-            transition: all 0.3s ease;
+        .stock-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
         }
         
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
-        .success-message {
+        .stock-info.in-stock {
             background: #d4edda;
-            color: #155724;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin: 10px 0;
             border: 1px solid #c3e6cb;
-            display: none;
+            color: #155724;
         }
         
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin: 10px 0;
-            border: 1px solid #f5c6cb;
-            display: none;
+        .stock-info.low-stock {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
         }
-
+        
+        .stock-info.out-of-stock {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .stock-count {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
         .quantity-selector {
             display: flex;
             align-items: center;
@@ -69,6 +101,11 @@ $isLoggedIn = isset($_SESSION["email"]);
             font-weight: bold;
         }
         
+        .quantity-selector button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
         .quantity-selector input {
             width: 60px;
             text-align: center;
@@ -76,20 +113,46 @@ $isLoggedIn = isset($_SESSION["email"]);
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+        
+        .btn {
+            transition: all 0.3s ease;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #ccc !important;
+        }
+        
+        .success-message, .error-message {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body>
     <?php include 'header.php'; ?>
     
-    
     <div class="page">
         <div class="product">
-            <!-- LEFT: image in a light-gray card -->
             <div class="image-panel">
                 <img src="<?= htmlspecialchars($_SESSION['image'] ?? 'images/default.png') ?>" alt="<?= htmlspecialchars($_SESSION['product_name'] ?? 'Product') ?>">
             </div>
 
-            <!-- RIGHT: product details -->
             <div class="details">
                 <h1 class="title"><?= htmlspecialchars($_SESSION['product_name'] ?? 'Unknown Product') ?></h1>
                 <p class="price"><?= htmlspecialchars($_SESSION['product_price'] ?? '₱0.00') ?></p>
@@ -97,6 +160,23 @@ $isLoggedIn = isset($_SESSION["email"]);
                 <div class="stars">
                     ⭐ ⭐ ⭐ ⭐ ⭐ <span class="muted">4.9 | 1k sold | 740 ratings <br></span>
                     <span class="muted">Shipping Fee: ₱25</span>
+                </div>
+
+                <!-- Stock Information -->
+                <div class="stock-info <?php 
+                    if ($product_stock == 0) echo 'out-of-stock';
+                    elseif ($product_stock <= 5) echo 'low-stock';
+                    else echo 'in-stock';
+                ?>">
+                    <span class="stock-count">
+                        <?php if ($product_stock == 0): ?>
+                            ❌ Out of Stock
+                        <?php elseif ($product_stock <= 5): ?>
+                            ⚠️ Only <?= $product_stock ?> left in stock!
+                        <?php else: ?>
+                            ✅ In Stock: <?= $product_stock ?> available
+                        <?php endif; ?>
+                    </span>
                 </div>
 
                 <?php if ($isLoggedIn): ?>
@@ -107,19 +187,23 @@ $isLoggedIn = isset($_SESSION["email"]);
                     <!-- Quantity selector -->
                     <div class="quantity-selector">
                         <label for="quantity">Quantity:</label>
-                        <button type="button" onclick="changeQuantity(-1)">-</button>
-                        <input type="number" id="quantity" value="1" min="1" max="10">
-                        <button type="button" onclick="changeQuantity(1)">+</button>
+                        <button type="button" onclick="changeQuantity(-1)" <?= $product_stock == 0 ? 'disabled' : '' ?>>-</button>
+                        <input type="number" id="quantity" value="1" min="1" max="<?= $product_stock ?>" <?= $product_stock == 0 ? 'disabled' : '' ?>>
+                        <button type="button" onclick="changeQuantity(1)" <?= $product_stock == 0 ? 'disabled' : '' ?>>+</button>
                     </div>
                     
                     <div id="success-message" class="success-message"></div>
                     <div id="error-message" class="error-message"></div>
                     
-                    <button class="btn" id="add-to-cart-btn" onclick="addToCart()">Add to Bag</button>
+                    <button class="btn" id="add-to-cart-btn" onclick="addToCart()" <?= $product_stock == 0 ? 'disabled' : '' ?>>
+                        <?= $product_stock == 0 ? 'Out of Stock' : 'Add to Bag' ?>
+                    </button>
                     
                     <p class="note"><?= htmlspecialchars($_SESSION['product_description'] ?? 'No description available.') ?></p>
                 <?php else: ?>
-                    <button class="btn" onclick="handleAddToBag()">Add to Bag</button>
+                    <button class="btn" onclick="handleAddToBag()" <?= $product_stock == 0 ? 'disabled' : '' ?>>
+                        <?= $product_stock == 0 ? 'Out of Stock' : 'Add to Bag' ?>
+                    </button>
                     
                     <p class="note"><b>Top notes:</b> Lavender, Pineapple, Bergamot, Lemon Verbena</p>
                     <p class="note"><b>Middle notes:</b> Red Apple, Dried Fruits, Oak Moss, Geranium, Rose</p>
@@ -130,49 +214,69 @@ $isLoggedIn = isset($_SESSION["email"]);
     </div>
 
     <script>
-        // Get product data from PHP
         const isLoggedIn = <?= json_encode($isLoggedIn) ?>;
+        const productStock = <?= $product_stock ?>;
         const productData = {
-            id: <?= intval($_GET['id'] ?? 0) ?>,
+            id: <?= json_encode($_GET['id'] ?? '') ?>,
             name: <?= json_encode($_SESSION['product_name'] ?? 'Unknown Product') ?>,
             price: <?= json_encode(preg_replace('/[^\d.]/', '', $_SESSION['product_price'] ?? '0')) ?>,
-            image: <?= json_encode($_SESSION['image'] ?? 'images/default.png') ?>
+            image: <?= json_encode($_SESSION['image'] ?? 'images/default.png') ?>,
+            stock: productStock
         };
 
-        console.log('Product Data:', productData);
-        console.log('User logged in:', isLoggedIn);
-
-        // Quantity management
         function changeQuantity(change) {
             const quantityInput = document.getElementById('quantity');
             let currentValue = parseInt(quantityInput.value);
             let newValue = currentValue + change;
             
             if (newValue < 1) newValue = 1;
-            if (newValue > 10) newValue = 10;
+            if (newValue > productStock) {
+                newValue = productStock;
+                showError(`Only ${productStock} items available in stock`);
+            }
             
             quantityInput.value = newValue;
         }
 
-        // Add to cart function for logged-in users
+        function showError(message) {
+            const errorMsg = document.getElementById('error-message');
+            errorMsg.textContent = message;
+            errorMsg.style.display = 'block';
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 3000);
+        }
+
+        function showSuccess(message) {
+            const successMsg = document.getElementById('success-message');
+            successMsg.textContent = message;
+            successMsg.style.display = 'block';
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+        }
+
         async function addToCart() {
             if (!isLoggedIn) {
                 handleAddToBag();
                 return;
             }
 
+            if (productStock == 0) {
+                showError('This product is out of stock');
+                return;
+            }
+
             const button = document.getElementById('add-to-cart-btn');
             const quantity = parseInt(document.getElementById('quantity').value);
-            const successMsg = document.getElementById('success-message');
-            const errorMsg = document.getElementById('error-message');
             
-            // Disable button during request
+            if (quantity > productStock) {
+                showError(`Only ${productStock} items available in stock`);
+                return;
+            }
+            
             button.disabled = true;
             button.textContent = 'Adding...';
-            
-            // Hide previous messages
-            successMsg.style.display = 'none';
-            errorMsg.style.display = 'none';
             
             try {
                 const formData = new FormData();
@@ -180,63 +284,45 @@ $isLoggedIn = isset($_SESSION["email"]);
                 formData.append('product_id', productData.id);
                 formData.append('quantity', quantity);
                 
-                console.log('Sending request to AddToCart.php with:', {
-                    action: 'add_to_cart',
-                    product_id: productData.id,
-                    quantity: quantity
-                });
-                
                 const response = await fetch('AddToCart.php', {
                     method: 'POST',
                     body: formData
                 });
                 
                 const text = await response.text();
-                console.log('Raw response from AddToCart.php:', text);
-                
-                // Try to parse JSON
-                let result;
-                try {
-                    result = JSON.parse(text);
-                } catch (parseError) {
-                    console.error('JSON Parse error:', parseError);
-                    throw new Error('Server returned invalid JSON: ' + text.substring(0, 100));
-                }
-                
-                console.log('Parsed result:', result);
+                const result = JSON.parse(text);
                 
                 if (result.success) {
-                    successMsg.textContent = result.message;
-                    successMsg.style.display = 'block';
-                    
-                    // Update cart badge if it exists
+                    showSuccess(result.message);
                     updateCartBadge();
-                    
-                    // Reset quantity to 1
                     document.getElementById('quantity').value = 1;
+                    
+                    // Reload page to update stock display
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
                 } else {
-                    errorMsg.textContent = result.message || 'Unknown error occurred';
-                    errorMsg.style.display = 'block';
+                    showError(result.message || 'Unknown error occurred');
                 }
             } catch (error) {
                 console.error('Fetch error:', error);
-                errorMsg.textContent = 'Error: ' + error.message;
-                errorMsg.style.display = 'block';
+                showError('Error: ' + error.message);
             } finally {
-                // Re-enable button
                 button.disabled = false;
-                button.textContent = 'Add to Bag';
+                button.textContent = productStock == 0 ? 'Out of Stock' : 'Add to Bag';
             }
         }
 
-        // Handle add to bag for non-logged in users
         function handleAddToBag() {
+            if (productStock == 0) {
+                alert('This product is out of stock');
+                return;
+            }
             if (confirm('You need to log in to add items to your cart. Go to login page?')) {
                 window.location.href = "index.php?page=login";
             }
         }
 
-        // Update cart badge
         async function updateCartBadge() {
             try {
                 const formData = new FormData();
@@ -259,14 +345,15 @@ $isLoggedIn = isset($_SESSION["email"]);
             }
         }
 
-        // Allow quantity input validation
         document.getElementById('quantity')?.addEventListener('change', function() {
             let value = parseInt(this.value);
             if (value < 1) this.value = 1;
-            if (value > 10) this.value = 10;
+            if (value > productStock) {
+                this.value = productStock;
+                showError(`Only ${productStock} items available in stock`);
+            }
         });
 
-        // Update cart count when page loads
         if (isLoggedIn) {
             updateCartBadge();
         }

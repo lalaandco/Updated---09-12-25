@@ -370,7 +370,7 @@ $isLoggedIn = isset($_SESSION["email"]);
                 </div>
             </a>
 
-            <a href="buyProduct.php?id=01" class="product-link">
+            <a href="buyProduct.php?id=02" class="product-link">
                 <div class="box">
                     <div class="box-img">
                         <img src="images/ForHer.png">
@@ -383,7 +383,7 @@ $isLoggedIn = isset($_SESSION["email"]);
                 </div>
             </a>
 
-            <a href="buyProduct.php?id=01" class="product-link">
+            <a href="buyProduct.php?id=03" class="product-link">
                 <div class="box">
                     <div class="box-img">
                         <img src="images/ForHer.png">
@@ -396,7 +396,7 @@ $isLoggedIn = isset($_SESSION["email"]);
                 </div>
             </a>
 
-            <a href="buyProduct.php?id=01" class="product-link">
+            <a href="buyProduct.php?id=04" class="product-link">
                 <div class="box">
                     <div class="box-img">
                         <img src="images/ForHer.png">
@@ -409,7 +409,7 @@ $isLoggedIn = isset($_SESSION["email"]);
                 </div>
             </a>
 
-            <a href="buyProduct.php?id=01" class="product-link">
+            <a href="buyProduct.php?id=05" class="product-link">
                 <div class="box">
                     <div class="box-img">
                         <img src="images/ForHer.png">
@@ -422,7 +422,7 @@ $isLoggedIn = isset($_SESSION["email"]);
                 </div>
             </a>
 
-            <a href="buyProduct.php?id=01" class="product-link">
+            <a href="buyProduct.php?id=06" class="product-link">
                 <div class="box">
                     <div class="box-img">
                         <img src="images/ForHer.png">
@@ -435,7 +435,7 @@ $isLoggedIn = isset($_SESSION["email"]);
                 </div>
             </a>
 
-            <a href="buyProduct.php?id=01" class="product-link">
+            <a href="buyProduct.php?id=07" class="product-link">
                 <div class="box">
                     <div class="box-img">
                         <img src="images/ForHer.png">
@@ -448,7 +448,7 @@ $isLoggedIn = isset($_SESSION["email"]);
                 </div>
             </a>
 
-            <a href="buyProduct.php?id=01" class="product-link">
+            <a href="buyProduct.php?id=08" class="product-link">
                 <div class="box">
                     <div class="box-img">
                         <img src="images/ForHer.png">
@@ -461,7 +461,7 @@ $isLoggedIn = isset($_SESSION["email"]);
                 </div>
             </a>
 
-            <a href="buyProduct.php?id=01" class="product-link">
+            <a href="buyProduct.php?id=09" class="product-link">
                 <div class="box">
                     <div class="box-img">
                         <img src="images/ForHer.png">
@@ -474,7 +474,7 @@ $isLoggedIn = isset($_SESSION["email"]);
                 </div>
             </a>
 
-            <a href="buyProduct.php?id=01" class="product-link">
+            <a href="buyProduct.php?id=010" class="product-link">
                 <div class="box">
                     <div class="box-img">
                         <img src="images/ForHer.png">
