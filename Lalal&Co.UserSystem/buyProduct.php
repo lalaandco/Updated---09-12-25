@@ -11,72 +11,8 @@ $isLoggedIn = isset($_SESSION["email"]);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($_SESSION['product_name'] ?? 'Product') ?> - La Gal & Co.</title>
-    <link rel="stylesheet" href="buyingProduct.css">
-    <style>
-        body {
-            padding-top: 120px;
-        }
-        
-        .page {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .btn {
-            transition: all 0.3s ease;
-        }
-        
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin: 10px 0;
-            border: 1px solid #c3e6cb;
-            display: none;
-        }
-        
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin: 10px 0;
-            border: 1px solid #f5c6cb;
-            display: none;
-        }
+    <link rel="stylesheet" href="buyingProducts.css">
 
-        .quantity-selector {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        
-        .quantity-selector button {
-            width: 30px;
-            height: 30px;
-            border: 1px solid #ddd;
-            background: #f8f9fa;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .quantity-selector input {
-            width: 60px;
-            text-align: center;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-    </style>
 </head>
 <body>
     <?php include 'header.php'; ?>
@@ -92,11 +28,11 @@ $isLoggedIn = isset($_SESSION["email"]);
             <!-- RIGHT: product details -->
             <div class="details">
                 <h1 class="title"><?= htmlspecialchars($_SESSION['product_name'] ?? 'Unknown Product') ?></h1>
-                <p class="price"><?= htmlspecialchars($_SESSION['product_price'] ?? '₱0.00') ?></p>
+                <p class="price"><?= htmlspecialchars('₱ ' . ($_SESSION['product_price'] ?? '0.00')) ?></p>
 
                 <div class="stars">
                     ⭐ ⭐ ⭐ ⭐ ⭐ <span class="muted">4.9 | 1k sold | 740 ratings <br></span>
-                    <span class="muted">Shipping Fee: ₱25</span>
+                    <span class="muted">Shipping Fee: ₱ 25</span>
                 </div>
 
                 <?php if ($isLoggedIn): ?>
@@ -104,7 +40,6 @@ $isLoggedIn = isset($_SESSION["email"]);
                         <span class="muted">Shipping to:</span> <?= htmlspecialchars($_SESSION['address'] ?? 'No address provided') ?>
                     </div>
                     
-                    <!-- Quantity selector -->
                     <div class="quantity-selector">
                         <label for="quantity">Quantity:</label>
                         <button type="button" onclick="changeQuantity(-1)">-</button>

@@ -45,7 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                             'name' => $product['product_name'],
                             'price' => $cleanPrice,
                             'image' => $product['image_path'],
-                            'quantity' => $quantity
+                            'quantity' => $quantity,
+                            'selected' => true // Default to selected
                         ];
                         $response = ['success' => true, 'message' => 'Item added to cart'];
                     } else {
@@ -57,6 +58,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 
                 if (empty($response)) {
                     $response = ['success' => true, 'message' => 'Item quantity updated'];
+                }
+                break;
+                
+            case 'toggle_selection':
+                $productId = intval($_POST['product_id']);
+                $selected = $_POST['selected'] === 'true';
+                
+                if (isset($_SESSION['cart'][$productId])) {
+                    $_SESSION['cart'][$productId]['selected'] = $selected;
+                    $response = ['success' => true, 'message' => 'Selection updated'];
+                } else {
+                    $response = ['success' => false, 'message' => 'Item not found'];
                 }
                 break;
                 
@@ -119,6 +132,9 @@ $isLoggedIn = isset($_SESSION["email"]);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="cart.css">
     <title>Your Bag - La Gal & Co.</title>
+    <style>
+       
+    </style>
 </head>
 <body>
     <?php include 'header.php'; ?>
@@ -131,7 +147,7 @@ $isLoggedIn = isset($_SESSION["email"]);
             <div class="cart-header">
                 <h1 class="cart-title">YOUR BAG</h1>
                 <p class="cart-subtitle">TOTAL (<span id="item-count">0</span> items) ₱<span id="total-amount">0</span></p>
-                <p class="cart-note">Items in your bag are not reserved — check out now to make them yours.</p>
+                <p class="cart-note">Items in your bag are not reserved – check out now to make them yours.</p>
             </div>
             
             <div id="cart-items-container">
@@ -149,6 +165,11 @@ $isLoggedIn = isset($_SESSION["email"]);
         <div class="order-summary">
             <h2 class="summary-title">ORDER SUMMARY</h2>
             
+            <div class="selected-summary">
+                <strong>Selected Items: <span id="selected-count">0</span></strong>
+                <div>Selected Total: ₱<span id="selected-total">0</span></div>
+            </div>
+            
             <div class="summary-row">
                 <span><span id="summary-item-count">0</span> ITEMS</span>
                 <span>₱<span id="summary-subtotal">0</span></span>
@@ -164,15 +185,18 @@ $isLoggedIn = isset($_SESSION["email"]);
                 <span>₱<span id="summary-total">25</span></span>
             </div>
             
-            <button class="checkout-btn" onclick="checkout()">
-                CHECKOUT
+            <button class="checkout-selected-btn" onclick="checkoutSelected()" id="checkout-btn" disabled>
+                CHECKOUT SELECTED ITEMS
                 <span>→</span>
             </button>
             
             <div class="payment-methods">
                 <br>
                 <p id="paymethods">Accepted Payment Methods</p>
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1CefFQibodbtysbX6PStx8gLRhlPgfMoLlA&s" alt="Visa" class="payment-icon">
+                <img src="https://gadgetsmagazine.com.ph/wp-content/uploads/2020/05/GCASH-logo.jpg" alt="Gcash" class="payment-icon">
+                <img src="https://financialit.net/sites/default/files/1609314895logo-mastercard-mobile_1_4.png" alt="Mastercard" class="payment-icon">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Paypal_2014_logo.png" alt="Paypal" class="payment-icon">
+                <img src="https://static.vecteezy.com/system/resources/previews/023/253/005/non_2x/cash-on-delivery-solid-icons-simple-stock-illustration-stock-vector.jpg" alt="Cash_on_delivery" class="payment-icon">
             </div>
         </div>
     </div>
@@ -215,6 +239,31 @@ $isLoggedIn = isset($_SESSION["email"]);
                 } catch (error) {
                     console.error('Error loading cart:', error);
                     this.cart = [];
+                }
+            }
+
+            async toggleItemSelection(id, selected) {
+                try {
+                    const formData = new FormData();
+                    formData.append('action', 'toggle_selection');
+                    formData.append('product_id', id);
+                    formData.append('selected', selected);
+                    
+                    const response = await fetch('AddToCart.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        // Update local cart data
+                        const item = this.cart.find(item => item.id == id);
+                        if (item) item.selected = selected;
+                        
+                        this.updateSummary();
+                    }
+                } catch (error) {
+                    console.error('Error toggling selection:', error);
                 }
             }
 
@@ -267,28 +316,28 @@ $isLoggedIn = isset($_SESSION["email"]);
                 }
             }
 
-            toggleWishlist(id) {
-                console.log('Toggle wishlist for item:', id);
-                // Implement wishlist functionality
+            getSelectedItems() {
+                if (!this.cart || this.cart.length === 0) return [];
+                return this.cart.filter(item => item.selected === true || item.selected === undefined);
             }
 
-            getSubtotal() {
-                if (!this.cart || this.cart.length === 0) return 0;
-                return this.cart.reduce((total, item) => {
+            getSelectedSubtotal() {
+                const selectedItems = this.getSelectedItems();
+                return selectedItems.reduce((total, item) => {
                     const price = parseFloat(item.price) || 0;
                     const quantity = parseInt(item.quantity) || 0;
                     return total + (price * quantity);
                 }, 0);
             }
 
-            getTotal() {
-                const subtotal = this.getSubtotal();
+            getSelectedTotal() {
+                const subtotal = this.getSelectedSubtotal();
                 return subtotal > 0 ? subtotal + this.deliveryFee : 0;
             }
 
-            getTotalItems() {
-                if (!this.cart || this.cart.length === 0) return 0;
-                return this.cart.reduce((total, item) => total + (parseInt(item.quantity) || 0), 0);
+            getSelectedItemsCount() {
+                const selectedItems = this.getSelectedItems();
+                return selectedItems.reduce((total, item) => total + (parseInt(item.quantity) || 0), 0);
             }
 
             renderCart() {
@@ -305,6 +354,10 @@ $isLoggedIn = isset($_SESSION["email"]);
                 
                 container.innerHTML = this.cart.map(item => `
                     <div class="cart-item" data-id="${item.id}">
+                        <input type="checkbox" class="item-checkbox" 
+                               ${item.selected !== false ? 'checked' : ''} 
+                               onchange="cartManager.toggleItemSelection(${item.id}, this.checked)">
+                        
                         <img src="${item.image}" alt="${item.name}" class="product-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'80\' fill=\'%23ddd\'%3E%3Crect width=\'80\' height=\'80\' fill=\'%23f5f5f5\'/%3E%3Ctext x=\'40\' y=\'45\' text-anchor=\'middle\' font-size=\'10\' fill=\'%23999\'%3EProduct%3C/text%3E%3C/svg%3E'">
                         
                         <div class="product-details">
@@ -318,27 +371,42 @@ $isLoggedIn = isset($_SESSION["email"]);
                             <button class="qty-btn plus" onclick="cartManager.updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
                         </div>
                         
-                        <button class="wishlist-btn" onclick="cartManager.toggleWishlist(${item.id})" title="Move to wishlist">♡</button>
-                        
                         <button class="remove-btn" onclick="cartManager.removeItem(${item.id})" title="Remove item">×</button>
                     </div>
                 `).join('');
             }
 
             updateSummary() {
-                const itemCount = this.getTotalItems();
-                const subtotal = this.getSubtotal();
-                const total = this.getTotal();
+                const selectedItems = this.getSelectedItems();
+                const selectedCount = selectedItems.length;
+                const selectedItemsCount = this.getSelectedItemsCount();
+                const selectedSubtotal = this.getSelectedSubtotal();
+                const selectedTotal = this.getSelectedTotal();
                 
-                document.getElementById('item-count').textContent = itemCount;
-                document.getElementById('total-amount').textContent = subtotal.toFixed(2);
-                document.getElementById('summary-item-count').textContent = itemCount;
-                document.getElementById('summary-subtotal').textContent = subtotal.toFixed(2);
-                document.getElementById('summary-total').textContent = total.toFixed(2);
+                // Update selected items summary
+                document.getElementById('selected-count').textContent = selectedCount;
+                document.getElementById('selected-total').textContent = selectedSubtotal.toFixed(2);
+                
+                // Update main summary
+                document.getElementById('item-count').textContent = selectedItemsCount;
+                document.getElementById('total-amount').textContent = selectedSubtotal.toFixed(2);
+                document.getElementById('summary-item-count').textContent = selectedItemsCount;
+                document.getElementById('summary-subtotal').textContent = selectedSubtotal.toFixed(2);
+                document.getElementById('summary-total').textContent = selectedTotal.toFixed(2);
+                
+                // Update checkout button
+                const checkoutBtn = document.getElementById('checkout-btn');
+                if (selectedCount > 0) {
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.textContent = `CHECKOUT SELECTED ITEMS (${selectedCount}) →`;
+                } else {
+                    checkoutBtn.disabled = true;
+                    checkoutBtn.textContent = 'SELECT ITEMS TO CHECKOUT →';
+                }
                 
                 // Update delivery fee display
                 const deliveryElement = document.getElementById('delivery-fee');
-                if (subtotal === 0) {
+                if (selectedSubtotal === 0) {
                     deliveryElement.textContent = '₱0';
                 } else {
                     deliveryElement.textContent = `₱${this.deliveryFee}`;
@@ -371,25 +439,30 @@ $isLoggedIn = isset($_SESSION["email"]);
         // Initialize cart manager
         const cartManager = new CartManager();
 
-        // Checkout function
-        function checkout() {
-            if (!cartManager.cart || cartManager.cart.length === 0) {
-                alert('Your cart is empty!');
+        // Checkout selected items function
+        function checkoutSelected() {
+            const selectedItems = cartManager.getSelectedItems();
+            
+            if (selectedItems.length === 0) {
+                alert('Please select items to checkout!');
                 return;
             }
             
-            const total = cartManager.getTotal();
-            const itemCount = cartManager.getTotalItems();
+            const total = cartManager.getSelectedTotal();
+            const itemCount = cartManager.getSelectedItemsCount();
             
-            if (confirm(`Proceed to checkout?\n\nItems: ${itemCount}\nTotal: ₱${total.toFixed(2)}`)) {
-                window.location.href = 'checkout.php';
-            }
+            // Store selected items in session storage for the checkout page
+            sessionStorage.setItem('selectedItems', JSON.stringify(selectedItems));
+            sessionStorage.setItem('checkoutTotal', total);
+            sessionStorage.setItem('checkoutItemCount', itemCount);
+            
+            window.location.href = 'checkout.php';
         }
     </script>
 
     <?php else: ?>
-        <div style="text-align: center; padding: 50px;">
-            <h2>Please log in to view your cart</h2>
+        <div style="text-align: center; padding: 100px; font-family: Arial, sans-serif; margin-top: 100px;">
+            <h2 style="margin-bottom: 20px;">Please log in to view your cart</h2>
             <a href="login.php" style="padding: 10px 20px; background: #333; color: white; text-decoration: none;">Login</a>
         </div>
     <?php endif; ?>
