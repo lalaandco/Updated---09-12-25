@@ -1,8 +1,11 @@
 <?php
+session_start(); // Add this at the very top
+
 if (basename($_SERVER['PHP_SELF']) == 'edit.php') {
-        header("Location: index.php?page=editProfile");
-        exit;
-    }
+    header("Location: index.php?page=editProfile");
+    exit;
+}
+
 if (!isset($_SESSION['email'])) {
     header('Location: index.php');
     exit;
@@ -81,8 +84,8 @@ $email = $_SESSION['email'] ?? '';
             border-radius: 15px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.15);
             width: 600px;
-            height: 1000px;
-            margin-top: 150px;
+            height: 790px;
+            margin-top: 120px;
             margin-left: 1450px;
             overflow-y: auto;
             animation: slideIn 0.3s ease-out;
@@ -213,30 +216,32 @@ $email = $_SESSION['email'] ?? '';
             <?php endif; ?>
 
             <form method="POST" action="index.php?page=editProfile">
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" value="<?= htmlspecialchars($name) ?>" required>
-                </div>
+                <form method="POST" action="header.php?page=editProfile">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" value="<?= htmlspecialchars($name) ?>" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="address">Address</label>
-                    <input type="text" id="address" name="address" value="<?= htmlspecialchars($address) ?>" required>
-                </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" name="address" value="<?= htmlspecialchars($address) ?>" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="contact">Contact Number</label>
-                    <input type="text" id="contact" name="contact" value="<?= htmlspecialchars($contact) ?>" required>
-                </div>
+                    <div class="form-group">
+                        <label for="contact">Contact Number</label>
+                        <input type="text" id="contact" name="contact" value="<?= htmlspecialchars($contact) ?>" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" value="<?= htmlspecialchars($email) ?>" class="email-field" disabled>
-                </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" value="<?= htmlspecialchars($email) ?>" class="email-field" disabled>
+                    </div>
 
-                <div class="buttons">
-                    <a href="index.php" class="back-btn">Back</a>
-                    <button type="submit">Save Changes</button>
-                </div>
+                    <div class="buttons">
+                        <a href="index.php" class="back-btn">Back</a>
+                        <button type="submit">Save Changes</button>
+                    </div>
+                </form>
             </form>
         </div>
     </div>
