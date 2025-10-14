@@ -1,0 +1,152 @@
+-- Create users table
+CREATE TABLE IF NOT EXISTS users (
+    id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    contact_number VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY unique_email (email)
+);
+
+-- Create product_tbl table with category included
+CREATE TABLE IF NOT EXISTS product_tbl (
+    product_id INT(11) NOT NULL AUTO_INCREMENT,
+    product_name VARCHAR(255) NOT NULL,
+    product_description TEXT NOT NULL,
+    product_price INT(11) NOT NULL,
+    product_quantity INT(11) NOT NULL DEFAULT 0,
+    category VARCHAR(50) DEFAULT 'ForHim',
+    image_path TEXT NOT NULL,
+    PRIMARY KEY (product_id)
+);
+
+-- Insert For Him products (1-24)
+INSERT INTO product_tbl (product_name, product_description, product_price, product_quantity, image_path, category) VALUES
+('CNALD TNOM','Top Note: Lavender, Pineapple, Bergamot, and Lemon Verbena',299,100,'images/ForHim.png','ForHim'),
+('DEERC SUTNEVA','Top Note: Bergamot Currant, Apple, Lemon and Pink Pepper',299,100,'images/ForHim.png','ForHim'),
+('DER ETSOCAL','Top Note: Green Apple',299,100,'images/ForHim.png','ForHim'),
+('EGAVUAS ROID','Top Note: Calabrian Bergamot and Pepper',299,100,'images/ForHim.png','ForHim'),
+('AUGUST','Top Note: Calabrian Bergamot and Pepper',299,100,'images/ForHim.png','ForHim'),
+('BILL','Top Note: Lime, Lemon, Bergamot, Jasmine, Orange, Mandarin Orange and Neroli',299,100,'images/ForHim.png','ForHim'),
+('JAMES', 'Top Note: Grapefruit, Lemon, Mint and Pepper',299,100,'images/ForHim.png','ForHim'),
+('JOE', 'Top Note: Mint, Green Apple and Lemon',299,100,'images/ForHim.png','ForHim'),
+('DREW', 'Top Note: Sea Notes, Grapefruit and Mandarin Orange',299,100,'images/ForHim.png','ForHim'),
+('JOHN', 'Top Note: Blood Mandarnin, Grapefruit and Mint',299,100, 'images/ForHim.png','ForHim'),
+('TIM', 'Top Note: Blood Mandarin, Grapefruit and Mint',299,100,'images/ForHim.png','ForHim'),
+('DRAKE', 'Top Note: Green Apple',299,100,'images/ForHim.png','ForHim'),
+('EKAYIM YESSI', 'Top Note: Top notes: Yuzu, Lemon, Bergamot, Lemon Verbena, Mandarin Orange, Cypress, Calone, Coriander, Tarragon, and Sage',299,100,'images/ForHim.png','ForHim'),
+('EMERTXE IRAGLVB', 'Top Note: Top notes: Cactus Juice, Calabrian bergamot, and Pink Grapefruit',299,100,'images/ForHim.png','ForHim'),
+('KCALB OLOP', 'Top Note: Top notes: Blood Mandarin, Grapefruit, and Mint',299,100,'images/ForHim.png','ForHim'),
+('LACOOSTE REED', 'Top Note: Green Apple', 299,100,'images/ForHim.png','ForHim'),
+('JLENAHC ED UELB', 'Top Note: Lemon, Mint and Pink Pepper', 299,100, 'images/ForHim.png','ForHim'),
+('NOILLIM ENO', 'Top Note: Blood Mandarin, Grapefruit and Mint', 299,100, 'images/ForHim.png','ForHim'),
+('OIG ED AUQCA', 'Top Note: Top notes: Lime, Lemon, Bergamot, Jasmine, Orange, Mandarin Orange, and Neroli', 299,100, 'images/ForHim.png','ForHim'),
+('RION RAKKARD', 'Top Note: Lavender, Lemon, Bergamot, Rosemary, Mint, Lemon Verbena, Basil, and Artemisia', 299,100, 'images/ForHim.png','ForHim'),
+('SORE ECASREV', 'Top Note: Mint, Green Apple and Lemon', 299,100, 'images/ForHim.png','ForHim'),
+('SSOB OGUH','Top Notes: Apple, Plum, Bergamot, Lemon, Oakmoss, and Geranium', 299,100, 'images/ForHim.png','ForHim'),
+('SUTCIVNI', 'Top Note: Pineapple, Bergamot, Black Currant, and Apple', 299,100, 'images/ForHim.png','ForHim'),
+('YPPAH EUQINILC', 'Top Note: Orange, Blood Grapefruit, Indian Mandarin, Bergamot, Apple, and Plum', 299,100, 'images/ForHim.png','ForHim');
+
+-- Insert For Her products (25-45)
+INSERT INTO product_tbl (product_name, product_description, product_price, product_quantity, image_path, category) VALUES
+('!WOEM', '50ML / 1.7FL.OZ. Top Notes: Pear, Tangerine, Gardenia, Jasmine. Middle Notes: Honeysuckle, African Orange Flower, Lily-of-the-Valley. Base Notes: Vanilla, Amber, Musk, Sandalwood', 299,100, 'images/ForHer.png','ForHer'),
+('33 LATNAS OBAL EL', '30% OIL CONCENTRATION. Fragrance Notes: Australian Sandalwood, Cedarwood, Cardamom, Iris, Violet, Smoky Wood Alloy, Ambrox, Leather Accord, Musky Notes', 299,100, 'images/ForHer.png','ForHer'),
+('045 EGUOR TARACCAB', 'Fragrance Notes: Vanilla, Powdery, Musky, Sweet. Inspired by —', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY AEP TEEWS', 'Top Notes: Sweet Pea, Pear, Tayberry, Black Currant. Middle Notes: Raspberry, Freesia, Pink Peony. Base Notes: Plum Tree, Musk', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY AG CLOUD', 'Top Notes: Lavender, Pear, Bergamot. Middle Notes: Whipped Cream, Praline, Coconut, Vanilla Orchid. Base Notes: Musk, Woody Notes', 299,100, 'images/ForHer.png','ForHer'),
+('AG CLOUD INSPIRED COLOGNE', '50ML. Top Notes: Lavender, Pear, Bergamot. Middle Notes: Whipped Cream, Praline, Coconut, Vanilla Orchid. Base Notes: Musk, Woody Notes', 299,100, 'images/ForHer.png','ForHer'),
+('CHERRY BLOSSOM INSPIRED COLOGNE', '50ML. Top Notes: Wisteria Petals, Watermelon, Green Notes, Plum. Middle Notes: Cherry Blossom, Freesia. Base Notes: Musk, Heliotrope, Sandalwood', 299,100, 'images/ForHer.png','ForHer'),
+('CUCUMBER MELON INSPIRED COLOGNE', '50ML. Top Notes: Lemon Leaves, Lilac. Middle Notes: Wisteria, Green Tea, Peach Flowers, Red Peony, Chinese Osmanthus. Base Notes: White Cedar, Amber, Sweet Musk', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY DUOLC EDNARG ANIARAC', '50ML / 1.70FL.OZ. Top Notes: Lavender, Pear, Bergamot. Middle Notes: Whipped Cream, Praline, Coconut, Vanilla Orchid. Base Notes: Musk, Woody Notes', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY ECAL ALLINA', '30ML / 1.0FL OZ. Notes: Vanilla, Powdery, Musky, Sweet', 299,100, 'images/ForHer.png','ForHer'),
+('ECLAT D''ARPEGE INSPIRED COLOGNE', '50ML. Top Notes: Lemon Leaves, Lilac. Middle Notes: Wisteria, Green Tea, Peach Flowers, Red Peony, Chinese Osmanthus. Base Notes: White Cedar, Amber, Sweet Musk', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY ETSYHTEMA IRAGLUB', '50ML / 1.7FL.OZ. Top Notes: Green Notes, Pink Grapefruit. Middle Notes: Iris, Bulgarian Rose. Base Notes: Heliotrope, Woodsy Notes', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY G&D THGIL EULB', '50ML / 1.7OZ. Top Notes: Sicilian Lemon, Apple, Cedar, Bellflower. Middle Notes: Bamboo, Jasmine, White Rose. Base Notes: Cedar, Musk, Amber', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY HSUR ICCUG', '50ML / 1.7OZ. Top Notes: Peach, Californian Gardenia, African Freesia Petals. Middle Notes: Coriander, Damask Rose, Jasmine. Base Notes: Patchouli, Natural Vanilla, Vetiver', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY KNIP ETSOCAL', '30ML / 1.01FL OZ. Top Notes: Orange, Peach, Blood Orange, Coriander, Cardamom. Middle Notes: Jasmine, Coriander, Cardamom, Violet Leaf, Carrot Seeds. Base Notes: Vanilla, Musk, Sandalwood', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY LENAHC ECAH & MUBAL', '30ML / 1.0FL OZ. Top Note: Pink Pepper. Middle Notes: Jasmine, Iris. Base Notes: Patchouli, Mousli, Vanilla', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY K.P MEOW!', 'Top Notes: Pear, Tangerine, Gardenia, Jasmine. Middle Notes: Honeysuckle, African Orange Flower, Lily-of-the-Valley. Base Notes: Vanille, Amber, Musk, Sandalwood', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY CHANEL CHANCE', 'Top Note: Pink Pepper. Middle Notes: Jasmine, Iris. Base Notes: Patchouli, Musk, Vanilla', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY ECLAT D''ARPEGE', 'Top Notes: Lemon Leaves, Lilac. Middle Notes: Wisteria, Green Tea, Peach Flowers, Red Peony, Chinese Osmanthus. Base Notes: White Cedar, Amber, Sweet Musk', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY CUCUMBER MELON', 'Top Note: Melon. Middle Notes: Cucumber, Lily-of-the-Valley, Jasmine. Base Note: Musk', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY D&G LIGHT BLUE', 'Top Notes: Sicilian Lemon, Apple, Cedar, Bellflower. Middle Notes: Bamboo, Jasmine, White Rose. Base Notes: Cedar, Musk, Amber', 299,100, 'images/ForHer.png','ForHer');
+
+-- Insert Others products (46-54)
+INSERT INTO product_tbl (product_name, product_description, product_price, product_quantity, image_path, category) VALUES
+('SWEET PEA INSPIRED COLOGNE', 'Top notes are Sweet Pea, Pear, Tayberry and Black Currant; middle notes are Raspberry, Freesia and Pink Peony; base notes are Plum Tree and Musk.', 39,100, 'images/6.png','Others'),
+('LACOSTE PINK INSPIRED COLOGNE', 'Top notes are Orange, Peach, Blood Orange, Coriander and Cardamom; middle notes are Jasmine, Coriander, Cardamom, Violet Leaf and Carrot Seeds; base notes are Vanilla, Musk and Sandalwood.', 39,100, 'images/6.png','Others'),
+('ECLAT D''ARPEGE INSPIRED COLOGNE', 'Top Notes are Lemon Leaves and Lilac. Middle Notes are Wisteria, Green Tea, Peach Flowers, Red Peony and Chinese Osmanthus. Base Notes are White Cedar, Amber and Sweet Musk.', 39,100, 'images/6.png','Others'),
+('CUCUMBER MELON INSPIRED COLOGNE', 'Top Notes are Lemon Leaves and Lilac. Middle Notes are Wisteria, Green Tea, Peach Flowers, Red Peony and Chinese Osmanthus. Base Notes are White Cedar, Amber and Sweet Musk.', 39,100, 'images/6.png','Others'),
+('CHERRY BLOSSOM INSPIRED COLOGNE', 'Top notes are Wisteria Petals, Watermelon, Green Notes and Plum; middle notes are Cherry Blossom and Freesia; base notes are Musk, Heliotrope and Sandalwood.', 39,100, 'images/6.png','Others'),
+('AG CLOUD INSPIRED COLOGNE', 'Top notes are Lavender, Pear and Bergamot; middle notes are Whipped Cream, Praline, Coconut and Vanilla Orchid; base notes are Musk and Woody Notes.', 39,100, 'images/6.png','Others'),
+('OKADA SCENT LINEN SPRAY', 'Linen spray is a household liquid product that eliminates undesired odors and infuses laundry, apparel, and home textiles with a pleasant scent. A high-quality bed sheet spray can also double as an air freshener in your home and car.', 150,100, 'images/8.png','Others'),
+('SOLAIRE SCENT LINEN SPRAY', 'Linen spray is a household liquid product that eliminates undesired odors and infuses laundry, apparel, and home textiles with a pleasant scent. A high-quality bed sheet spray can also double as an air freshener in your home and car.', 150,100, 'images/7.png','Others'),
+('HAND SANITIZER', 'Hand sanitizer, also called hand antiseptic, handrub, or hand rub, agent applied to the hands for the purpose of removing common pathogens.', 39,100, 'images/ForOthers.png','Others');
+
+-- Create orders table
+CREATE TABLE IF NOT EXISTS orders (
+    order_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    user_email VARCHAR(255) NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    address TEXT NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    postal_code VARCHAR(20) NOT NULL,
+    payment_method ENUM('gcash','mastercard','paypal','cod') NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    order_notes TEXT DEFAULT NULL,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('pending','confirmed','processing','shipped','delivered','cancelled') NOT NULL DEFAULT 'pending',
+    tracking_number VARCHAR(100) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create order_items table
+CREATE TABLE IF NOT EXISTS order_items (
+    item_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    order_id INT(11) NOT NULL,
+    product_id INT(11) NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    product_price DECIMAL(10,2) NOT NULL,
+    quantity INT(11) NOT NULL,
+    subtotal DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
+    CONSTRAINT fk_product FOREIGN KEY (product_id) REFERENCES product_tbl(product_id) ON DELETE CASCADE
+);
+
+-- Modified product_tbl with inventory management columns
+ALTER TABLE product_tbl 
+ADD COLUMN inventory_quantity INT(11) NOT NULL DEFAULT 0 COMMENT 'Total warehouse inventory',
+ADD COLUMN display_quantity INT(11) NOT NULL DEFAULT 0 COMMENT 'Quantity visible to customers',
+MODIFY COLUMN product_quantity INT(11) NOT NULL DEFAULT 0 COMMENT 'Legacy - will be used as total stock';
+
+-- Update existing products to have proper inventory setup
+-- Copy current product_quantity to both inventory and display quantities
+UPDATE product_tbl 
+SET inventory_quantity = product_quantity,
+    display_quantity = product_quantity
+WHERE inventory_quantity = 0 AND display_quantity = 0;
+
+-- Create inventory transactions table to track all stock movements
+CREATE TABLE IF NOT EXISTS inventory_transactions (
+    transaction_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    product_id INT(11) NOT NULL,
+    transaction_type ENUM('restock', 'move_to_display', 'customer_purchase', 'return', 'adjustment') NOT NULL,
+    quantity INT(11) NOT NULL COMMENT 'Positive for additions, negative for removals',
+    inventory_before INT(11) NOT NULL,
+    inventory_after INT(11) NOT NULL,
+    display_before INT(11) NOT NULL,
+    display_after INT(11) NOT NULL,
+    notes TEXT DEFAULT NULL,
+    admin_email VARCHAR(255) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES product_tbl(product_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Create index for faster queries
+CREATE INDEX idx_product_transaction ON inventory_transactions(product_id, created_at);
+CREATE INDEX idx_transaction_type ON inventory_transactions(transaction_type);
