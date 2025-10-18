@@ -1,633 +1,334 @@
 <?php
 session_start();
+require_once 'config.php';
 $isLoggedIn = isset($_SESSION["email"]);
+
+// Get all products grouped by category with ratings
+$forHimProducts = $conn->query("
+    SELECT 
+        product_id,
+        product_name,
+        product_price,
+        image_path,
+        category,
+        display_quantity,
+        average_rating,
+        total_ratings
+    FROM product_tbl 
+    WHERE category = 'ForHim' 
+    ORDER BY product_id ASC
+");
+
+$forHerProducts = $conn->query("
+    SELECT 
+        product_id,
+        product_name,
+        product_price,
+        image_path,
+        category,
+        display_quantity,
+        average_rating,
+        total_ratings
+    FROM product_tbl 
+    WHERE category = 'ForHer' 
+    ORDER BY product_id ASC
+");
+
+$othersProducts = $conn->query("
+    SELECT 
+        product_id,
+        product_name,
+        product_price,
+        image_path,
+        category,
+        display_quantity,
+        average_rating,
+        total_ratings
+    FROM product_tbl 
+    WHERE category = 'Others' 
+    ORDER BY product_id ASC
+");
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Page Title</title>
-    <link rel="stylesheet" href="Categories.css">
-    <!-- Add other CSS files as needed -->
+    <title>Product Categories - La Gal & Co.</title>
+    <link rel="stylesheet" href="productCategories.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        /* Rating Styles for Category Page */
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        .product-rating .stars {
+            color: #ffc107;
+            font-size: 16px;
+            display: flex;
+            gap: 2px;
+        }
+        
+        .product-rating .star-icon {
+            color: #ddd;
+        }
+        
+        .product-rating .star-icon.filled {
+            color: #ffc107;
+        }
+        
+        .product-rating .rating-text {
+            color: #666;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .product-rating .rating-count {
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .box {
+            position: relative;
+        }
+        
+        .out-of-stock-badge, .low-stock-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 10;
+        }
+        
+        .out-of-stock-badge {
+            background: #f44336;
+            color: white;
+        }
+        
+        .low-stock-badge {
+            background: #ff9800;
+            color: white;
+        }
+        
+        
+        .box.out-of-stock::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
     <?php include 'header.php'; ?>
 
-    
     <section class="product" id="product">
-
         <div class="select-category">
             <a href="#ForHimCollection" class="category-link active">For Him</a>
             <a href="#ForHerCollection" class="category-link">For Her</a>
             <a href="#OthersCollection" class="category-link">Others</a>
         </div>
 
-
+        <!-- FOR HIM COLLECTION -->
         <section id="ForHimCollection">
-
-        <div class="middle-text">
-            <h2><span>For Him Collection</span></h2>
-        </div>
-
-        
-
-            <div class="product-contents">
-
-                <a href="buyProduct.php?id=1" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>CNALD TNOM</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=2" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>DEERC SUTNEVA</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-                
-                <a href="buyProduct.php?id=3" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>DER ETSOCAL</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-                
-                <a href="buyProduct.php?id=4" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>EGAVUAS ROID</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=5" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>AUGUST</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=6" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>BILL</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=7" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>JAMES</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=8" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>JOE</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=9" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>DREW</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=10" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>JOHN</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=11" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>TIM</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=12" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>DRAKE</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=13" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>EKAYIM YESSI</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=14" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>EMERTXE IRAGLVB</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=15" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>KCALB OLOP</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=16" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>LACOOSTE REED</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=17" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>JLENAHC ED UELB</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=18" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>NOILLIM ENO</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=19" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>OIG ED AUQCA</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=20" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>RION RAKKARD</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-                
-                <a href="buyProduct.php?id=21" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>SORE ECASREV</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=22" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>SSOB OGUH</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=23" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>SUTCIVNI</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-                <a href="buyProduct.php?id=24" class="product-link">
-                    <div class="box">
-                        <div class="box-img">
-                            <img src="images/ForHim.png">
-                        </div>
-                        <h3>YPPAH EUQINILC</h3>
-                        <div class="inbox">
-                            <span class="price">₱299.00</span>
-                        
-                        </div>
-                    </div>
-                </a>
-
-        </div>  
-        </section>
-
-        <section id="ForHerCollection">
-
-        <div class="middle-text">
-            <h2><span>For Her Collection</span></h2>
-        </div>
-
-        <div class="product-contents">
-            <!-- Product 1 - Now fully clickable -->
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/ForHer.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/ForHer.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/ForHer.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/ForHer.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/ForHer.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/ForHer.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/ForHer.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/ForHer.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/ForHer.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/ForHer.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
+            <div class="middle-text">
+                <h2><span>For Him Collection</span></h2>
             </div>
-
+            <div class="product-contents">
+                <?php while ($product = $forHimProducts->fetch_assoc()): ?>
+                    <?php 
+                    $isOutOfStock = $product['display_quantity'] <= 0;
+                    $isLowStock = $product['display_quantity'] > 0 && $product['display_quantity'] < 20;
+                    ?>
+                    <a href="buyProduct.php?id=<?php echo $product['product_id']; ?>" class="product-link">
+                        <div class="box <?php echo $isOutOfStock ? 'out-of-stock' : ''; ?>">
+                            <?php if ($isOutOfStock): ?>
+                                <div class="out-of-stock-badge">Out of Stock</div>
+                            <?php elseif ($isLowStock): ?>
+                                <div class="low-stock-badge">Low Stock!</div>
+                            <?php endif; ?>
+                            
+                            <div class="box-img">
+                                <img src="<?php echo htmlspecialchars($product['image_path']); ?>" 
+                                    alt="<?php echo htmlspecialchars($product['product_name']); ?>" class="others-image">
+                            </div>
+                            <h3><?php echo htmlspecialchars($product['product_name']); ?></h3>
+                            <div class="inbox">
+                                <span class="price">₱<?php echo number_format($product['product_price'], 2); ?></span>
+                            </div>
+                            
+                            <!-- Product Rating Display -->
+                            <?php if ($product['total_ratings'] > 0): ?>
+                            <div class="product-rating">
+                                <div class="stars">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <span class="star-icon <?php echo $i <= round($product['average_rating']) ? 'filled' : ''; ?>">★</span>
+                                    <?php endfor; ?>
+                                </div>
+                                <span class="rating-text"><?php echo number_format($product['average_rating'], 1); ?></span>
+                                <span class="rating-count">(<?php echo number_format($product['total_ratings']); ?>)</span>
+                            </div>
+                            <?php else: ?>
+                            <div class="product-rating">
+                                <div class="stars">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <span class="star-icon">★</span>
+                                    <?php endfor; ?>
+                                </div>
+                                <span class="rating-count">No ratings yet</span>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                    </a>
+                <?php endwhile; ?>
+            </div>
         </section>
 
+        <!-- FOR HER COLLECTION -->
+        <section id="ForHerCollection">
+            <div class="middle-text">
+                <h2><span>For Her Collection</span></h2>
+            </div>
+            <div class="product-contents">
+                <?php while ($product = $forHerProducts->fetch_assoc()): ?>
+                    <?php 
+                    $isOutOfStock = $product['display_quantity'] <= 0;
+                    $isLowStock = $product['display_quantity'] > 0 && $product['display_quantity'] < 20;
+                    ?>
+                    <a href="buyProduct.php?id=<?php echo $product['product_id']; ?>" class="product-link">
+                        <div class="box <?php echo $isOutOfStock ? 'out-of-stock' : ''; ?>">
+                            <?php if ($isOutOfStock): ?>
+                                <div class="out-of-stock-badge">Out of Stock</div>
+                            <?php elseif ($isLowStock): ?>
+                                <div class="low-stock-badge">Low Stock!</div>
+                            <?php endif; ?>
+                            
+                            <div class="box-img">
+                                <img src="<?php echo htmlspecialchars($product['image_path']); ?>" 
+                                    alt="<?php echo htmlspecialchars($product['product_name']); ?>" class="others-image">
+                            </div>
+                            <h3><?php echo htmlspecialchars($product['product_name']); ?></h3>
+                            <div class="inbox">
+                                <span class="price">₱<?php echo number_format($product['product_price'], 2); ?></span>
+                            </div>
+                            
+                            <!-- Product Rating Display -->
+                            <?php if ($product['total_ratings'] > 0): ?>
+                            <div class="product-rating">
+                                <div class="stars">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <span class="star-icon <?php echo $i <= round($product['average_rating']) ? 'filled' : ''; ?>">★</span>
+                                    <?php endfor; ?>
+                                </div>
+                                <span class="rating-text"><?php echo number_format($product['average_rating'], 1); ?></span>
+                                <span class="rating-count">(<?php echo number_format($product['total_ratings']); ?>)</span>
+                            </div>
+                            <?php else: ?>
+                            <div class="product-rating">
+                                <div class="stars">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <span class="star-icon">★</span>
+                                    <?php endfor; ?>
+                                </div>
+                                <span class="rating-count">No ratings yet</span>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                    </a>
+                <?php endwhile; ?>
+            </div>
+        </section>
+
+        <!-- OTHERS COLLECTION -->
         <section id="OthersCollection">
-        <div class="middle-text">
-            <h2><span>Others Collection</span></h2>
-        </div>
-
-        <div class="product-contents">
-            <!-- Product 1 - Now fully clickable -->
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/5.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/5.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/5.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/5.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/5.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/5.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            <a href="buyProduct.php?id=01" class="product-link">
-                <div class="box">
-                    <div class="box-img">
-                        <img src="images/5.png">
-                    </div>
-                    <h3>Cnalb Tnom</h3>
-                    <div class="inbox">
-                        <span class="price">₱360.00</span>
-                    
-                    </div>
-                </div>
-            </a>
-
-            
+            <div class="middle-text">
+                <h2><span>Others Collection</span></h2>
+            </div>
+            <div class="product-contents">
+                <?php while ($product = $othersProducts->fetch_assoc()): ?>
+                    <?php 
+                    $isOutOfStock = $product['display_quantity'] <= 0;
+                    $isLowStock = $product['display_quantity'] > 0 && $product['display_quantity'] < 20;
+                    ?>
+                    <a href="buyProduct.php?id=<?php echo $product['product_id']; ?>" class="product-link">
+                        <div class="box <?php echo $isOutOfStock ? 'out-of-stock' : ''; ?>">
+                            <?php if ($isOutOfStock): ?>
+                                <div class="out-of-stock-badge">Out of Stock</div>
+                            <?php elseif ($isLowStock): ?>
+                                <div class="low-stock-badge">Low Stock!</div>
+                            <?php endif; ?>
+                            
+                            <div class="box-img">
+                                <img src="<?php echo htmlspecialchars($product['image_path']); ?>" 
+                                    alt="<?php echo htmlspecialchars($product['product_name']); ?>" class="others-image">
+                            </div>
+                            <h3><?php echo htmlspecialchars($product['product_name']); ?></h3>
+                            <div class="inbox">
+                                <span class="price">₱<?php echo number_format($product['product_price'], 2); ?></span>
+                            </div>
+                            
+                            <!-- Product Rating Display -->
+                            <?php if ($product['total_ratings'] > 0): ?>
+                            <div class="product-rating">
+                                <div class="stars">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <span class="star-icon <?php echo $i <= round($product['average_rating']) ? 'filled' : ''; ?>">★</span>
+                                    <?php endfor; ?>
+                                </div>
+                                <span class="rating-text"><?php echo number_format($product['average_rating'], 1); ?></span>
+                                <span class="rating-count">(<?php echo number_format($product['total_ratings']); ?>)</span>
+                            </div>
+                            <?php else: ?>
+                            <div class="product-rating">
+                                <div class="stars">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <span class="star-icon">★</span>
+                                    <?php endfor; ?>
+                                </div>
+                                <span class="rating-count">No ratings yet</span>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                    </a>
+                <?php endwhile; ?>
+            </div>
         </section>
-
     </section>
 
     <script>
-        // Wait for DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', function() {
-            // Get all category links and sections
             const categoryLinks = document.querySelectorAll('.category-link');
             const categorySections = document.querySelectorAll('#ForHimCollection, #ForHerCollection, #OthersCollection');
             
-            // Function to hide all sections
             function hideAllSections() {
                 categorySections.forEach(section => {
                     section.style.display = 'none';
                 });
             }
             
-            // Function to remove active class from all links
             function removeActiveClasses() {
                 categoryLinks.forEach(link => {
                     link.classList.remove('active');
                 });
             }
             
-            // Function to show specific section and activate corresponding link
             function showSection(targetId) {
                 const targetSection = document.querySelector(targetId);
                 if (targetSection) {
-                    // Hide all sections first
                     hideAllSections();
-                    // Remove all active classes
                     removeActiveClasses();
-                    
-                    // Show the target section
                     targetSection.style.display = 'block';
-                    
-                    // Add active class to the corresponding link
                     const correspondingLink = document.querySelector(`a[href="${targetId}"]`);
                     if (correspondingLink) {
                         correspondingLink.classList.add('active');
@@ -635,43 +336,32 @@ $isLoggedIn = isset($_SESSION["email"]);
                 }
             }
             
-            // Check if there's a hash in the URL when page loads
             function handleInitialHash() {
                 const hash = window.location.hash;
                 if (hash && (hash === '#ForHimCollection' || hash === '#ForHerCollection' || hash === '#OthersCollection')) {
                     showSection(hash);
                 } else {
-                    // Default to "For Him" if no valid hash
                     showSection('#ForHimCollection');
                 }
             }
             
-            // Handle initial page load
             handleInitialHash();
             
-            // Add click event listeners to category links
             categoryLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     const href = this.getAttribute('href');
                     if (href.startsWith('#')) {
                         e.preventDefault();
-                        
-                        // Update URL hash without page reload
                         window.history.pushState(null, null, href);
-                        
-                        // Show the target section
                         showSection(href);
                     }
                 });
             });
             
-            // Listen for browser back/forward button
             window.addEventListener('hashchange', function() {
                 handleInitialHash();
             });
         });
     </script>
-            
-    
 </body>
 </html>
