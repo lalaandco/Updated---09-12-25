@@ -4,7 +4,7 @@ if (isset($_GET['id'])) {
     $productId = $_GET['id'];
 
     // Prepare the SQL query to prevent SQL injection
-    $stmt = $conn->prepare("SELECT * FROM product_tbl WHERE product_id = ?");
+    $stmt = $conn->prepare("SELECT * FROM forher_tbl WHERE product_id = ?");
     $stmt->bind_param("i", $productId); // use $productId, not $product_id
 
     $stmt->execute();
@@ -35,5 +35,4 @@ if (isset($_GET['id'])) {
     $_SESSION["product_price"] = "0.00";
     $_SESSION["image"] = "images/default.png";
 }
-
 ?>
