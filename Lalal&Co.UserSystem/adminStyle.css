@@ -1,0 +1,345 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            width: 100%;
+            height: 80px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-section {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .lc-logo img {
+            height: 60px;
+        }
+
+        .dashboard-info h3 {
+            font-size: 24px;
+            color: #333333;
+            margin-bottom: 2px;
+        }
+
+        .dashboard-info p {
+            font-size: 14px;
+            color: #777777;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+        }
+
+        .center-section {
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .welcome-text {
+            font-size: 32px;
+            font-weight: 600;
+            color: #333333;
+            letter-spacing: 2px;
+        }
+
+        .right-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .icon-tags {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .icon-tags a {
+            text-decoration: none;
+            color: #333333;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-section img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid black;
+            object-fit: cover;
+        }
+
+        .profile-section span {
+            font-size: 14px;
+            color: #333333;
+            font-weight: 500;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: #e0e0e0;
+            margin: 0;
+        }
+
+        .main-content {
+            padding: 40px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card i {
+            font-size: 48px;
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+
+        .card h4 {
+            font-size: 16px;
+            color: #333333;
+            margin-top: 10px;
+        }
+
+        .card a {
+            text-decoration: none;
+            color: #4CAF50;
+            font-weight: 600;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .bottom-section {
+            padding: 0 40px 40px 40px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-title {
+            font-size: 18px;
+            color: #333333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        .report-title {
+            font-size: 18px;
+            color: #333333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .report-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .report-item:last-child {
+            border-bottom: none;
+        }
+
+        .report-value {
+            font-weight: 600;
+            color: #333333;
+        }
+
+
+.logout-section {
+    margin-left: 20px;
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255, 59, 48, 0.1);
+    color: #ff3b30;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 59, 48, 0.2);
+    transform: translateY(-1px);
+}
+
+.logout-btn i {
+    font-size: 18px;
+}
+
+/* Make sure right-section has proper flex alignment */
+.right-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.card a {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .card {
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .card a i {
+            font-size: 48px;
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+        
+        .card a h4 {
+            font-size: 16px;
+            color: #333333;
+            margin-top: 10px;
+        }
+        
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        #salesChart {
+            max-height: 350px;
+        }
+        
+        .report-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .report-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .report-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .report-item:last-child {
+            border-bottom: none;
+        }
+        
+        .report-item span:first-child {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .report-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #4CAF50;
+        }
+        
+        .stat-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
