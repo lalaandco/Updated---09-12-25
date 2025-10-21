@@ -1,0 +1,1040 @@
+-- Create users table
+CREATE TABLE IF NOT EXISTS users (
+    id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    contact_number VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY unique_email (email)
+);
+
+
+-- Create product_tbl table with category included
+CREATE TABLE IF NOT EXISTS product_tbl (
+    product_id INT(11) NOT NULL AUTO_INCREMENT,
+    product_name VARCHAR(255) NOT NULL,
+    product_description TEXT NOT NULL,
+    product_price INT(11) NOT NULL,
+    product_quantity INT(11) NOT NULL DEFAULT 0,
+    category VARCHAR(50) DEFAULT 'ForHim',
+    image_path TEXT NOT NULL,
+    PRIMARY KEY (product_id)
+);
+
+
+-- Insert For Him products (1-24)
+INSERT INTO product_tbl (product_name, product_description, product_price, product_quantity, image_path, category) VALUES
+('CNALD TNOM','Top Note: Lavender, Pineapple, Bergamot, and Lemon Verbena',299,100,'images/ForHim.png','ForHim'),
+('DEERC SUTNEVA','Top Note: Bergamot Currant, Apple, Lemon and Pink Pepper',299,100,'images/ForHim.png','ForHim'),
+('DER ETSOCAL','Top Note: Green Apple',299,100,'images/ForHim.png','ForHim'),
+('EGAVUAS ROID','Top Note: Calabrian Bergamot and Pepper',299,100,'images/ForHim.png','ForHim'),
+('AUGUST','Top Note: Calabrian Bergamot and Pepper',299,100,'images/ForHim.png','ForHim'),
+('BILL','Top Note: Lime, Lemon, Bergamot, Jasmine, Orange, Mandarin Orange and Neroli',299,100,'images/ForHim.png','ForHim'),
+('JAMES', 'Top Note: Grapefruit, Lemon, Mint and Pepper',299,100,'images/ForHim.png','ForHim'),
+('JOE', 'Top Note: Mint, Green Apple and Lemon',299,100,'images/ForHim.png','ForHim'),
+('DREW', 'Top Note: Sea Notes, Grapefruit and Mandarin Orange',299,100,'images/ForHim.png','ForHim'),
+('JOHN', 'Top Note: Blood Mandarnin, Grapefruit and Mint',299,100, 'images/ForHim.png','ForHim'),
+('TIM', 'Top Note: Blood Mandarin, Grapefruit and Mint',299,100,'images/ForHim.png','ForHim'),
+('DRAKE', 'Top Note: Green Apple',299,100,'images/ForHim.png','ForHim'),
+('EKAYIM YESSI', 'Top Note: Top notes: Yuzu, Lemon, Bergamot, Lemon Verbena, Mandarin Orange, Cypress, Calone, Coriander, Tarragon, and Sage',299,100,'images/ForHim.png','ForHim'),
+('EMERTXE IRAGLVB', 'Top Note: Top notes: Cactus Juice, Calabrian bergamot, and Pink Grapefruit',299,100,'images/ForHim.png','ForHim'),
+('KCALB OLOP', 'Top Note: Top notes: Blood Mandarin, Grapefruit, and Mint',299,100,'images/ForHim.png','ForHim'),
+('LACOOSTE REED', 'Top Note: Green Apple', 299,100,'images/ForHim.png','ForHim'),
+('JLENAHC ED UELB', 'Top Note: Lemon, Mint and Pink Pepper', 299,100, 'images/ForHim.png','ForHim'),
+('NOILLIM ENO', 'Top Note: Blood Mandarin, Grapefruit and Mint', 299,100, 'images/ForHim.png','ForHim'),
+('OIG ED AUQCA', 'Top Note: Top notes: Lime, Lemon, Bergamot, Jasmine, Orange, Mandarin Orange, and Neroli', 299,100, 'images/ForHim.png','ForHim'),
+('RION RAKKARD', 'Top Note: Lavender, Lemon, Bergamot, Rosemary, Mint, Lemon Verbena, Basil, and Artemisia', 299,100, 'images/ForHim.png','ForHim'),
+('SORE ECASREV', 'Top Note: Mint, Green Apple and Lemon', 299,100, 'images/ForHim.png','ForHim'),
+('SSOB OGUH','Top Notes: Apple, Plum, Bergamot, Lemon, Oakmoss, and Geranium', 299,100, 'images/ForHim.png','ForHim'),
+('SUTCIVNI', 'Top Note: Pineapple, Bergamot, Black Currant, and Apple', 299,100, 'images/ForHim.png','ForHim'),
+('YPPAH EUQINILC', 'Top Note: Orange, Blood Grapefruit, Indian Mandarin, Bergamot, Apple, and Plum', 299,100, 'images/ForHim.png','ForHim');
+
+-- Insert For Her products (25-45)
+INSERT INTO product_tbl (product_name, product_description, product_price, product_quantity, image_path, category) VALUES
+('!WOEM', '50ML / 1.7FL.OZ. Top Notes: Pear, Tangerine, Gardenia, Jasmine. Middle Notes: Honeysuckle, African Orange Flower, Lily-of-the-Valley. Base Notes: Vanilla, Amber, Musk, Sandalwood', 299,100, 'images/ForHer.png','ForHer'),
+('33 LATNAS OBAL EL', '30% OIL CONCENTRATION. Fragrance Notes: Australian Sandalwood, Cedarwood, Cardamom, Iris, Violet, Smoky Wood Alloy, Ambrox, Leather Accord, Musky Notes', 299,100, 'images/ForHer.png','ForHer'),
+('045 EGUOR TARACCAB', 'Fragrance Notes: Vanilla, Powdery, Musky, Sweet. Inspired by —', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY AEP TEEWS', 'Top Notes: Sweet Pea, Pear, Tayberry, Black Currant. Middle Notes: Raspberry, Freesia, Pink Peony. Base Notes: Plum Tree, Musk', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY AG CLOUD', 'Top Notes: Lavender, Pear, Bergamot. Middle Notes: Whipped Cream, Praline, Coconut, Vanilla Orchid. Base Notes: Musk, Woody Notes', 299,100, 'images/ForHer.png','ForHer'),
+('AG CLOUD INSPIRED COLOGNE', '50ML. Top Notes: Lavender, Pear, Bergamot. Middle Notes: Whipped Cream, Praline, Coconut, Vanilla Orchid. Base Notes: Musk, Woody Notes', 299,100, 'images/ForHer.png','ForHer'),
+('CHERRY BLOSSOM INSPIRED COLOGNE', '50ML. Top Notes: Wisteria Petals, Watermelon, Green Notes, Plum. Middle Notes: Cherry Blossom, Freesia. Base Notes: Musk, Heliotrope, Sandalwood', 299,100, 'images/ForHer.png','ForHer'),
+('CUCUMBER MELON INSPIRED COLOGNE', '50ML. Top Notes: Lemon Leaves, Lilac. Middle Notes: Wisteria, Green Tea, Peach Flowers, Red Peony, Chinese Osmanthus. Base Notes: White Cedar, Amber, Sweet Musk', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY DUOLC EDNARG ANIARAC', '50ML / 1.70FL.OZ. Top Notes: Lavender, Pear, Bergamot. Middle Notes: Whipped Cream, Praline, Coconut, Vanilla Orchid. Base Notes: Musk, Woody Notes', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY ECAL ALLINA', '30ML / 1.0FL OZ. Notes: Vanilla, Powdery, Musky, Sweet', 299,100, 'images/ForHer.png','ForHer'),
+('ECLAT D''ARPEGE INSPIRED COLOGNE', '50ML. Top Notes: Lemon Leaves, Lilac. Middle Notes: Wisteria, Green Tea, Peach Flowers, Red Peony, Chinese Osmanthus. Base Notes: White Cedar, Amber, Sweet Musk', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY ETSYHTEMA IRAGLUB', '50ML / 1.7FL.OZ. Top Notes: Green Notes, Pink Grapefruit. Middle Notes: Iris, Bulgarian Rose. Base Notes: Heliotrope, Woodsy Notes', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY G&D THGIL EULB', '50ML / 1.7OZ. Top Notes: Sicilian Lemon, Apple, Cedar, Bellflower. Middle Notes: Bamboo, Jasmine, White Rose. Base Notes: Cedar, Musk, Amber', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY HSUR ICCUG', '50ML / 1.7OZ. Top Notes: Peach, Californian Gardenia, African Freesia Petals. Middle Notes: Coriander, Damask Rose, Jasmine. Base Notes: Patchouli, Natural Vanilla, Vetiver', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY KNIP ETSOCAL', '30ML / 1.01FL OZ. Top Notes: Orange, Peach, Blood Orange, Coriander, Cardamom. Middle Notes: Jasmine, Coriander, Cardamom, Violet Leaf, Carrot Seeds. Base Notes: Vanilla, Musk, Sandalwood', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY LENAHC ECAH & MUBAL', '30ML / 1.0FL OZ. Top Note: Pink Pepper. Middle Notes: Jasmine, Iris. Base Notes: Patchouli, Mousli, Vanilla', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY K.P MEOW!', 'Top Notes: Pear, Tangerine, Gardenia, Jasmine. Middle Notes: Honeysuckle, African Orange Flower, Lily-of-the-Valley. Base Notes: Vanille, Amber, Musk, Sandalwood', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY CHANEL CHANCE', 'Top Note: Pink Pepper. Middle Notes: Jasmine, Iris. Base Notes: Patchouli, Musk, Vanilla', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY ECLAT D''ARPEGE', 'Top Notes: Lemon Leaves, Lilac. Middle Notes: Wisteria, Green Tea, Peach Flowers, Red Peony, Chinese Osmanthus. Base Notes: White Cedar, Amber, Sweet Musk', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY CUCUMBER MELON', 'Top Note: Melon. Middle Notes: Cucumber, Lily-of-the-Valley, Jasmine. Base Note: Musk', 299,100, 'images/ForHer.png','ForHer'),
+('INSPIRED BY D&G LIGHT BLUE', 'Top Notes: Sicilian Lemon, Apple, Cedar, Bellflower. Middle Notes: Bamboo, Jasmine, White Rose. Base Notes: Cedar, Musk, Amber', 299,100, 'images/ForHer.png','ForHer');
+
+-- Insert Others products (46-54)
+INSERT INTO product_tbl (product_name, product_description, product_price, product_quantity, image_path, category) VALUES
+('SWEET PEA INSPIRED COLOGNE', 'Top notes are Sweet Pea, Pear, Tayberry and Black Currant; middle notes are Raspberry, Freesia and Pink Peony; base notes are Plum Tree and Musk.', 39,100, 'images/6.png','Others'),
+('LACOSTE PINK INSPIRED COLOGNE', 'Top notes are Orange, Peach, Blood Orange, Coriander and Cardamom; middle notes are Jasmine, Coriander, Cardamom, Violet Leaf and Carrot Seeds; base notes are Vanilla, Musk and Sandalwood.', 39,100, 'images/6.png','Others'),
+('ECLAT D''ARPEGE INSPIRED COLOGNE', 'Top Notes are Lemon Leaves and Lilac. Middle Notes are Wisteria, Green Tea, Peach Flowers, Red Peony and Chinese Osmanthus. Base Notes are White Cedar, Amber and Sweet Musk.', 39,100, 'images/6.png','Others'),
+('CUCUMBER MELON INSPIRED COLOGNE', 'Top Notes are Lemon Leaves and Lilac. Middle Notes are Wisteria, Green Tea, Peach Flowers, Red Peony and Chinese Osmanthus. Base Notes are White Cedar, Amber and Sweet Musk.', 39,100, 'images/6.png','Others'),
+('CHERRY BLOSSOM INSPIRED COLOGNE', 'Top notes are Wisteria Petals, Watermelon, Green Notes and Plum; middle notes are Cherry Blossom and Freesia; base notes are Musk, Heliotrope and Sandalwood.', 39,100, 'images/6.png','Others'),
+('AG CLOUD INSPIRED COLOGNE', 'Top notes are Lavender, Pear and Bergamot; middle notes are Whipped Cream, Praline, Coconut and Vanilla Orchid; base notes are Musk and Woody Notes.', 39,100, 'images/6.png','Others'),
+('OKADA SCENT LINEN SPRAY', 'Linen spray is a household liquid product that eliminates undesired odors and infuses laundry, apparel, and home textiles with a pleasant scent. A high-quality bed sheet spray can also double as an air freshener in your home and car.', 150,100, 'images/8.png','Others'),
+('SOLAIRE SCENT LINEN SPRAY', 'Linen spray is a household liquid product that eliminates undesired odors and infuses laundry, apparel, and home textiles with a pleasant scent. A high-quality bed sheet spray can also double as an air freshener in your home and car.', 150,100, 'images/7.png','Others'),
+('HAND SANITIZER', 'Hand sanitizer, also called hand antiseptic, handrub, or hand rub, agent applied to the hands for the purpose of removing common pathogens.', 39,100, 'images/ForOthers.png','Others');
+
+
+-- Create orders table
+CREATE TABLE IF NOT EXISTS orders (
+    order_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    user_email VARCHAR(255) NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    address TEXT NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    postal_code VARCHAR(20) NOT NULL,
+    payment_method ENUM('gcash','mastercard','paypal','cod') NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    order_notes TEXT DEFAULT NULL,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('pending','confirmed','processing','shipped','delivered','cancelled') NOT NULL DEFAULT 'pending',
+    tracking_number VARCHAR(100) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+-- Create order_items table
+CREATE TABLE IF NOT EXISTS order_items (
+    item_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    order_id INT(11) NOT NULL,
+    product_id INT(11) NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    product_price DECIMAL(10,2) NOT NULL,
+    quantity INT(11) NOT NULL,
+    subtotal DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
+    CONSTRAINT fk_product FOREIGN KEY (product_id) REFERENCES product_tbl(product_id) ON DELETE CASCADE
+);
+
+
+-- Modified product_tbl with inventory management columns
+ALTER TABLE product_tbl 
+ADD COLUMN inventory_quantity INT(11) NOT NULL DEFAULT 0 COMMENT 'Total warehouse inventory',
+ADD COLUMN display_quantity INT(11) NOT NULL DEFAULT 0 COMMENT 'Quantity visible to customers',
+MODIFY COLUMN product_quantity INT(11) NOT NULL DEFAULT 0 COMMENT 'Legacy - will be used as total stock';
+
+
+-- Update existing products to have proper inventory setup
+-- Copy current product_quantity to both inventory and display quantities
+UPDATE product_tbl 
+SET inventory_quantity = product_quantity,
+    display_quantity = product_quantity
+WHERE inventory_quantity = 0 AND display_quantity = 0;
+
+
+-- Create inventory transactions table to track all stock movements
+CREATE TABLE IF NOT EXISTS inventory_transactions (
+    transaction_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    product_id INT(11) NOT NULL,
+    transaction_type ENUM('restock', 'move_to_display', 'customer_purchase', 'return', 'adjustment') NOT NULL,
+    quantity INT(11) NOT NULL COMMENT 'Positive for additions, negative for removals',
+    inventory_before INT(11) NOT NULL,
+    inventory_after INT(11) NOT NULL,
+    display_before INT(11) NOT NULL,
+    display_after INT(11) NOT NULL,
+    notes TEXT DEFAULT NULL,
+    admin_email VARCHAR(255) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES product_tbl(product_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Create index for faster queries
+CREATE INDEX idx_product_transaction ON inventory_transactions(product_id, created_at);
+CREATE INDEX idx_transaction_type ON inventory_transactions(transaction_type);
+
+
+
+
+-- Sales tracking table (automatically populated when orders are completed)
+CREATE TABLE IF NOT EXISTS sales_records (
+    sale_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    order_id INT(11) NOT NULL,
+    user_email VARCHAR(255) NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    payment_method ENUM('gcash','mastercard','paypal','cod') NOT NULL,
+    sale_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fiscal_year INT(4) NOT NULL,
+    fiscal_month INT(2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
+    INDEX idx_sale_date (sale_date),
+    INDEX idx_fiscal (fiscal_year, fiscal_month)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- Trigger to automatically create sale record when order is delivered
+DELIMITER $$
+CREATE TRIGGER after_order_delivered
+AFTER UPDATE ON orders
+FOR EACH ROW
+BEGIN
+    IF NEW.status = 'delivered' AND OLD.status != 'delivered' THEN
+        INSERT INTO sales_records (order_id, user_email, total_amount, payment_method, sale_date, fiscal_year, fiscal_month)
+        VALUES (
+            NEW.order_id, 
+            NEW.user_email, 
+            NEW.total_amount, 
+            NEW.payment_method,
+            NOW(),
+            YEAR(NOW()),
+            MONTH(NOW())
+        )
+        ON DUPLICATE KEY UPDATE sale_id = sale_id; -- Prevent duplicates
+    END IF;
+END$$
+DELIMITER ;
+
+
+-- Purchase orders table (for tracking inventory purchases from suppliers)
+CREATE TABLE IF NOT EXISTS purchase_orders (
+    purchase_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    supplier_name VARCHAR(255) NOT NULL,
+    purchase_date DATE NOT NULL,
+    total_cost DECIMAL(10,2) NOT NULL DEFAULT 0,
+    status ENUM('pending', 'received', 'cancelled') DEFAULT 'pending',
+    notes TEXT,
+    created_by VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_purchase_date (purchase_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- Purchase order items
+CREATE TABLE IF NOT EXISTS purchase_order_items (
+    item_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    purchase_id INT(11) NOT NULL,
+    product_id INT(11) NOT NULL,
+    quantity INT(11) NOT NULL,
+    unit_cost DECIMAL(10,2) NOT NULL,
+    subtotal DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (purchase_id) REFERENCES purchase_orders(purchase_id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES product_tbl(product_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- Activity log for admin actions
+CREATE TABLE IF NOT EXISTS admin_activity_log (
+    log_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    admin_email VARCHAR(255) NOT NULL,
+    action_type VARCHAR(100) NOT NULL,
+    description TEXT,
+    affected_table VARCHAR(100),
+    affected_id INT(11),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_admin (admin_email),
+    INDEX idx_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- Update existing inventory_transactions to link with purchase orders (optional)
+ALTER TABLE inventory_transactions 
+ADD COLUMN purchase_id INT(11) NULL,
+ADD FOREIGN KEY (purchase_id) REFERENCES purchase_orders(purchase_id) ON DELETE SET NULL;
+
+
+-- Create view for quick sales summary
+CREATE OR REPLACE VIEW v_sales_summary AS
+SELECT 
+    DATE(sale_date) as date,
+    COUNT(sale_id) as total_sales,
+    SUM(total_amount) as revenue,
+    AVG(total_amount) as avg_sale,
+    fiscal_year,
+    fiscal_month
+FROM sales_records
+GROUP BY DATE(sale_date), fiscal_year, fiscal_month;
+
+
+-- Create view for inventory valuation
+CREATE OR REPLACE VIEW v_inventory_value AS
+SELECT 
+    p.product_id,
+    p.product_name,
+    p.category,
+    p.inventory_quantity,
+    p.display_quantity,
+    (p.inventory_quantity + p.display_quantity) as total_stock,
+    p.product_price,
+    (p.inventory_quantity + p.display_quantity) * p.product_price as total_value
+FROM product_tbl p;
+
+
+-- Create view for low stock alerts
+CREATE OR REPLACE VIEW v_low_stock_alerts AS
+SELECT 
+    product_id,
+    product_name,
+    category,
+    inventory_quantity,
+    display_quantity,
+    (inventory_quantity + display_quantity) as total_stock,
+    CASE 
+        WHEN display_quantity = 0 THEN 'OUT_OF_STOCK'
+        WHEN display_quantity < 10 THEN 'CRITICAL'
+        WHEN display_quantity < 20 THEN 'LOW'
+        ELSE 'NORMAL'
+    END as stock_status
+FROM product_tbl
+WHERE display_quantity < 20 OR inventory_quantity < 30
+ORDER BY total_stock ASC;
+
+
+
+-- Create Walk-In Sales table
+CREATE TABLE IF NOT EXISTS walkin_sales (
+    sale_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    customer_name VARCHAR(255) NOT NULL,
+    payment_method ENUM('cash', 'gcash', 'mastercard', 'cod') NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    sale_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by VARCHAR(255) NOT NULL,
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_sale_date (sale_date),
+    INDEX idx_customer (customer_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- Create Walk-In Sale Items table
+CREATE TABLE IF NOT EXISTS walkin_sale_items (
+    item_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    sale_id INT(11) NOT NULL,
+    product_id INT(11) NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    quantity INT(11) NOT NULL,
+    unit_price DECIMAL(10,2) NOT NULL,
+    subtotal DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sale_id) REFERENCES walkin_sales(sale_id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES product_tbl(product_id) ON DELETE CASCADE,
+    INDEX idx_sale (sale_id),
+    INDEX idx_product (product_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE inventory_transactions MODIFY transaction_type ENUM('restock', 'move_to_display', 'customer_purchase', 'return', 'adjustment', 'walk_in_purchase') NOT NULL;
+
+
+-- Add payment_status column to orders table if not exists
+ALTER TABLE orders 
+ADD COLUMN IF NOT EXISTS payment_status ENUM('pending_verification', 'verified', 'failed', 'cancelled') DEFAULT 'pending_verification',
+ADD COLUMN IF NOT EXISTS payment_verified_at TIMESTAMP NULL;
+
+-- Create payment_verifications table to store GCash transaction proofs
+CREATE TABLE IF NOT EXISTS payment_verifications (
+    verification_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    order_id INT(11) NOT NULL UNIQUE,
+    gcash_transaction_id VARCHAR(100) NOT NULL,
+    screenshot_path VARCHAR(255) NOT NULL,
+    verification_status ENUM('pending', 'verified', 'failed', 'resubmit_needed') DEFAULT 'pending',
+    admin_notes TEXT,
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    verified_at TIMESTAMP NULL,
+    verified_by VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
+    INDEX idx_status (verification_status),
+    INDEX idx_submitted (submitted_at),
+    INDEX idx_order (order_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Create index for faster payment lookups
+CREATE INDEX idx_payment_status ON orders(payment_status);
+CREATE INDEX idx_gcash_transaction ON payment_verifications(gcash_transaction_id);
+
+
+-- Create shopping_cart table with proper foreign key references
+CREATE TABLE IF NOT EXISTS shopping_cart (
+    cart_id INT(11) NOT NULL AUTO_INCREMENT,
+    user_email VARCHAR(255) NOT NULL,
+    product_id INT(11) NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    product_price DECIMAL(10,2) NOT NULL,
+    quantity INT(11) NOT NULL,
+    image_path VARCHAR(255) DEFAULT NULL,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (cart_id),
+    UNIQUE KEY unique_cart_item (user_email, product_id),
+    KEY idx_user_email (user_email),
+    KEY idx_product_id (product_id),
+    KEY idx_cart_user_product (user_email, product_id),
+    -- Foreign key to product_tbl
+    FOREIGN KEY (product_id) REFERENCES product_tbl(product_id) ON DELETE CASCADE,
+    -- Foreign key to users table (if you want to enforce user existence)
+    FOREIGN KEY (user_email) REFERENCES users(email) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Add comment to table
+ALTER TABLE shopping_cart COMMENT = 'Stores user shopping cart items before checkout';
+
+
+
+
+-- Create product_ratings table to store customer reviews and ratings
+CREATE TABLE IF NOT EXISTS product_ratings (
+    rating_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    order_id INT(11) NOT NULL,
+    user_email VARCHAR(255) NOT NULL,
+    product_id INT(11) NOT NULL,
+    rating INT(1) NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    review_title VARCHAR(255) DEFAULT NULL,
+    review_text TEXT DEFAULT NULL,
+    is_verified_purchase TINYINT(1) DEFAULT 1,
+    helpful_count INT(11) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_email) REFERENCES users(email) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES product_tbl(product_id) ON DELETE CASCADE,
+    UNIQUE KEY unique_order_product_rating (order_id, product_id),
+    INDEX idx_product_rating (product_id, rating),
+    INDEX idx_user_ratings (user_email),
+    INDEX idx_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Add rating summary columns to product_tbl (checking if they don't exist)
+SET @dbname = DATABASE();
+SET @tablename = "product_tbl";
+SET @columnname = "average_rating";
+SET @preparedStatement = (SELECT IF(
+  (
+    SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE
+      (table_name = @tablename)
+      AND (table_schema = @dbname)
+      AND (column_name = @columnname)
+  ) > 0,
+  "SELECT 1",
+  CONCAT("ALTER TABLE ", @tablename, " ADD ", @columnname, " DECIMAL(3,2) DEFAULT 0.00")
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+SET @columnname = "total_ratings";
+SET @preparedStatement = (SELECT IF(
+  (
+    SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE
+      (table_name = @tablename)
+      AND (table_schema = @dbname)
+      AND (column_name = @columnname)
+  ) > 0,
+  "SELECT 1",
+  CONCAT("ALTER TABLE ", @tablename, " ADD ", @columnname, " INT(11) DEFAULT 0")
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+SET @columnname = "rating_1_star";
+SET @preparedStatement = (SELECT IF(
+  (
+    SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE
+      (table_name = @tablename)
+      AND (table_schema = @dbname)
+      AND (column_name = @columnname)
+  ) > 0,
+  "SELECT 1",
+  CONCAT("ALTER TABLE ", @tablename, " ADD ", @columnname, " INT(11) DEFAULT 0")
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+SET @columnname = "rating_2_star";
+SET @preparedStatement = (SELECT IF(
+  (
+    SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE
+      (table_name = @tablename)
+      AND (table_schema = @dbname)
+      AND (column_name = @columnname)
+  ) > 0,
+  "SELECT 1",
+  CONCAT("ALTER TABLE ", @tablename, " ADD ", @columnname, " INT(11) DEFAULT 0")
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+SET @columnname = "rating_3_star";
+SET @preparedStatement = (SELECT IF(
+  (
+    SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE
+      (table_name = @tablename)
+      AND (table_schema = @dbname)
+      AND (column_name = @columnname)
+  ) > 0,
+  "SELECT 1",
+  CONCAT("ALTER TABLE ", @tablename, " ADD ", @columnname, " INT(11) DEFAULT 0")
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+SET @columnname = "rating_4_star";
+SET @preparedStatement = (SELECT IF(
+  (
+    SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE
+      (table_name = @tablename)
+      AND (table_schema = @dbname)
+      AND (column_name = @columnname)
+  ) > 0,
+  "SELECT 1",
+  CONCAT("ALTER TABLE ", @tablename, " ADD ", @columnname, " INT(11) DEFAULT 0")
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+SET @columnname = "rating_5_star";
+SET @preparedStatement = (SELECT IF(
+  (
+    SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE
+      (table_name = @tablename)
+      AND (table_schema = @dbname)
+      AND (column_name = @columnname)
+  ) > 0,
+  "SELECT 1",
+  CONCAT("ALTER TABLE ", @tablename, " ADD ", @columnname, " INT(11) DEFAULT 0")
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+-- Drop existing triggers if they exist
+DROP TRIGGER IF EXISTS after_rating_insert;
+DROP TRIGGER IF EXISTS after_rating_update;
+DROP TRIGGER IF EXISTS after_rating_delete;
+
+-- Create trigger to automatically update product rating summary when a new rating is added
+DELIMITER $$
+CREATE TRIGGER after_rating_insert
+AFTER INSERT ON product_ratings
+FOR EACH ROW
+BEGIN
+    DECLARE avg_rating DECIMAL(3,2);
+    DECLARE total_count INT;
+    DECLARE star1, star2, star3, star4, star5 INT;
+    
+    -- Calculate new statistics
+    SELECT 
+        ROUND(AVG(rating), 2),
+        COUNT(*),
+        SUM(CASE WHEN rating = 1 THEN 1 ELSE 0 END),
+        SUM(CASE WHEN rating = 2 THEN 1 ELSE 0 END),
+        SUM(CASE WHEN rating = 3 THEN 1 ELSE 0 END),
+        SUM(CASE WHEN rating = 4 THEN 1 ELSE 0 END),
+        SUM(CASE WHEN rating = 5 THEN 1 ELSE 0 END)
+    INTO avg_rating, total_count, star1, star2, star3, star4, star5
+    FROM product_ratings
+    WHERE product_id = NEW.product_id;
+    
+    -- Update product table
+    UPDATE product_tbl
+    SET 
+        average_rating = avg_rating,
+        total_ratings = total_count,
+        rating_1_star = star1,
+        rating_2_star = star2,
+        rating_3_star = star3,
+        rating_4_star = star4,
+        rating_5_star = star5
+    WHERE product_id = NEW.product_id;
+END$$
+DELIMITER ;
+
+-- Create trigger to update product rating summary when a rating is updated
+DELIMITER $$
+CREATE TRIGGER after_rating_update
+AFTER UPDATE ON product_ratings
+FOR EACH ROW
+BEGIN
+    DECLARE avg_rating DECIMAL(3,2);
+    DECLARE total_count INT;
+    DECLARE star1, star2, star3, star4, star5 INT;
+    
+    -- Calculate new statistics
+    SELECT 
+        ROUND(AVG(rating), 2),
+        COUNT(*),
+        SUM(CASE WHEN rating = 1 THEN 1 ELSE 0 END),
+        SUM(CASE WHEN rating = 2 THEN 1 ELSE 0 END),
+        SUM(CASE WHEN rating = 3 THEN 1 ELSE 0 END),
+        SUM(CASE WHEN rating = 4 THEN 1 ELSE 0 END),
+        SUM(CASE WHEN rating = 5 THEN 1 ELSE 0 END)
+    INTO avg_rating, total_count, star1, star2, star3, star4, star5
+    FROM product_ratings
+    WHERE product_id = NEW.product_id;
+    
+    -- Update product table
+    UPDATE product_tbl
+    SET 
+        average_rating = avg_rating,
+        total_ratings = total_count,
+        rating_1_star = star1,
+        rating_2_star = star2,
+        rating_3_star = star3,
+        rating_4_star = star4,
+        rating_5_star = star5
+    WHERE product_id = NEW.product_id;
+END$$
+DELIMITER ;
+
+-- Create trigger to update product rating summary when a rating is deleted
+DELIMITER $$
+CREATE TRIGGER after_rating_delete
+AFTER DELETE ON product_ratings
+FOR EACH ROW
+BEGIN
+    DECLARE avg_rating DECIMAL(3,2);
+    DECLARE total_count INT;
+    DECLARE star1, star2, star3, star4, star5 INT;
+    
+    -- Calculate new statistics
+    SELECT 
+        ROUND(COALESCE(AVG(rating), 0), 2),
+        COUNT(*),
+        SUM(CASE WHEN rating = 1 THEN 1 ELSE 0 END),
+        SUM(CASE WHEN rating = 2 THEN 1 ELSE 0 END),
+        SUM(CASE WHEN rating = 3 THEN 1 ELSE 0 END),
+        SUM(CASE WHEN rating = 4 THEN 1 ELSE 0 END),
+        SUM(CASE WHEN rating = 5 THEN 1 ELSE 0 END)
+    INTO avg_rating, total_count, star1, star2, star3, star4, star5
+    FROM product_ratings
+    WHERE product_id = OLD.product_id;
+    
+    -- Update product table
+    UPDATE product_tbl
+    SET 
+        average_rating = COALESCE(avg_rating, 0),
+        total_ratings = COALESCE(total_count, 0),
+        rating_1_star = COALESCE(star1, 0),
+        rating_2_star = COALESCE(star2, 0),
+        rating_3_star = COALESCE(star3, 0),
+        rating_4_star = COALESCE(star4, 0),
+        rating_5_star = COALESCE(star5, 0)
+    WHERE product_id = OLD.product_id;
+END$$
+DELIMITER ;
+
+-- Create view for product rating statistics
+CREATE OR REPLACE VIEW v_product_rating_stats AS
+SELECT 
+    p.product_id,
+    p.product_name,
+    p.average_rating,
+    p.total_ratings,
+    p.rating_5_star,
+    p.rating_4_star,
+    p.rating_3_star,
+    p.rating_2_star,
+    p.rating_1_star,
+    CASE 
+        WHEN p.total_ratings >= 100 THEN 'Highly Rated'
+        WHEN p.total_ratings >= 50 THEN 'Well Rated'
+        WHEN p.total_ratings >= 10 THEN 'Rated'
+        ELSE 'Few Ratings'
+    END as rating_badge,
+    ROUND((p.rating_5_star / NULLIF(p.total_ratings, 0)) * 100, 1) as percent_5_star,
+    ROUND((p.rating_4_star / NULLIF(p.total_ratings, 0)) * 100, 1) as percent_4_star,
+    ROUND((p.rating_3_star / NULLIF(p.total_ratings, 0)) * 100, 1) as percent_3_star,
+    ROUND((p.rating_2_star / NULLIF(p.total_ratings, 0)) * 100, 1) as percent_2_star,
+    ROUND((p.rating_1_star / NULLIF(p.total_ratings, 0)) * 100, 1) as percent_1_star
+FROM product_tbl p;
+
+-- Success message
+SELECT 'Rating system database schema has been successfully created!' as Status;
+
+
+
+
+
+-- Simplified users table with proper address fields (NO EMAIL VERIFICATION)
+ALTER TABLE users 
+ADD COLUMN house_number VARCHAR(100) DEFAULT NULL AFTER password,
+ADD COLUMN street VARCHAR(255) DEFAULT NULL AFTER house_number,
+ADD COLUMN barangay VARCHAR(255) DEFAULT NULL AFTER street,
+ADD COLUMN city VARCHAR(255) DEFAULT NULL AFTER barangay,
+ADD COLUMN province VARCHAR(255) DEFAULT NULL AFTER city,
+ADD COLUMN postal_code VARCHAR(20) DEFAULT NULL AFTER province;
+
+-- Update existing users to have default values (so they can still login)
+UPDATE users 
+SET 
+    house_number = SUBSTRING_INDEX(address, ',', 1),
+    street = 'N/A',
+    barangay = 'N/A',
+    city = COALESCE(NULLIF(TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(address, ',', -2), ',', 1)), ''), 'Manila'),
+    province = 'Metro Manila',
+    postal_code = '1000'
+WHERE house_number IS NULL;
+
+-- Optional: Drop the old address column if you want (CAREFUL - backup first!)
+-- ALTER TABLE users DROP COLUMN address;
+
+-- Or keep it for backward compatibility and just update it from components
+-- (This is recommended so existing code doesn't break)
+
+-- Philippine cities reference table (optional - just for reference)
+CREATE TABLE IF NOT EXISTS ph_cities (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    city_name VARCHAR(255) NOT NULL,
+    province VARCHAR(255) NOT NULL,
+    region VARCHAR(100) NOT NULL,
+    UNIQUE KEY unique_city_province (city_name, province)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Insert major Philippine cities (sample)
+INSERT IGNORE INTO ph_cities (city_name, province, region) VALUES
+-- Metro Manila
+('Manila', 'Metro Manila', 'NCR'),
+('Quezon City', 'Metro Manila', 'NCR'),
+('Caloocan', 'Metro Manila', 'NCR'),
+('Las Piñas', 'Metro Manila', 'NCR'),
+('Makati', 'Metro Manila', 'NCR'),
+('Malabon', 'Metro Manila', 'NCR'),
+('Mandaluyong', 'Metro Manila', 'NCR'),
+('Marikina', 'Metro Manila', 'NCR'),
+('Muntinlupa', 'Metro Manila', 'NCR'),
+('Navotas', 'Metro Manila', 'NCR'),
+('Parañaque', 'Metro Manila', 'NCR'),
+('Pasay', 'Metro Manila', 'NCR'),
+('Pasig', 'Metro Manila', 'NCR'),
+('Pateros', 'Metro Manila', 'NCR'),
+('San Juan', 'Metro Manila', 'NCR'),
+('Taguig', 'Metro Manila', 'NCR'),
+('Valenzuela', 'Metro Manila', 'NCR'),
+
+-- CALABARZON
+('Antipolo', 'Rizal', 'Region IV-A'),
+('Bacoor', 'Cavite', 'Region IV-A'),
+('Dasmariñas', 'Cavite', 'Region IV-A'),
+('Imus', 'Cavite', 'Region IV-A'),
+('Biñan', 'Laguna', 'Region IV-A'),
+('Calamba', 'Laguna', 'Region IV-A'),
+('San Pedro', 'Laguna', 'Region IV-A'),
+('Santa Rosa', 'Laguna', 'Region IV-A'),
+
+-- Other Major Cities
+('Baguio', 'Benguet', 'CAR'),
+('Cebu City', 'Cebu', 'Region VII'),
+('Davao City', 'Davao del Sur', 'Region XI'),
+('Zamboanga City', 'Zamboanga del Sur', 'Region IX'),
+('Cagayan de Oro', 'Misamis Oriental', 'Region X'),
+('Iloilo City', 'Iloilo', 'Region VI'),
+('Bacolod', 'Negros Occidental', 'Region VI');
+
+-- Success message
+SELECT 'Database updated successfully! Address system is ready to use.' as Status;
+
+
+
+
+
+
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+
+-- Check and add inventory_quantity column if missing
+SET @dbname = DATABASE();
+SET @tablename = 'product_tbl';
+SET @columnname = 'inventory_quantity';
+SET @columntype = 'INT(11) NOT NULL DEFAULT 0 COMMENT "Total warehouse inventory"';
+
+SET @stmt = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+     WHERE TABLE_SCHEMA = @dbname
+       AND TABLE_NAME = @tablename
+       AND COLUMN_NAME = @columnname) > 0,
+    'SELECT "✅ inventory_quantity column already exists" AS Status',
+    CONCAT('ALTER TABLE ', @tablename, ' ADD COLUMN ', @columnname, ' ', @columntype)
+));
+
+PREPARE alter_stmt FROM @stmt;
+EXECUTE alter_stmt;
+DEALLOCATE PREPARE alter_stmt;
+
+-- Check and add display_quantity column if missing
+SET @columnname = 'display_quantity';
+SET @columntype = 'INT(11) NOT NULL DEFAULT 0 COMMENT "Quantity visible to customers"';
+
+SET @stmt = (SELECT IF(
+    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+     WHERE TABLE_SCHEMA = @dbname
+       AND TABLE_NAME = @tablename
+       AND COLUMN_NAME = @columnname) > 0,
+    'SELECT "✅ display_quantity column already exists" AS Status',
+    CONCAT('ALTER TABLE ', @tablename, ' ADD COLUMN ', @columnname, ' ', @columntype)
+));
+
+PREPARE alter_stmt FROM @stmt;
+EXECUTE alter_stmt;
+DEALLOCATE PREPARE alter_stmt;
+
+
+
+UPDATE product_tbl 
+SET inventory_quantity = product_quantity,
+    display_quantity = product_quantity
+WHERE inventory_quantity = 0 
+  AND display_quantity = 0 
+  AND product_quantity > 0;
+
+
+CREATE TABLE IF NOT EXISTS inventory_transactions (
+    transaction_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    product_id INT(11) NOT NULL,
+    transaction_type ENUM('restock', 'move_to_display', 'customer_purchase', 'return', 'adjustment', 'walk_in_purchase') NOT NULL,
+    quantity INT(11) NOT NULL COMMENT 'Positive for additions, negative for removals',
+    inventory_before INT(11) NOT NULL,
+    inventory_after INT(11) NOT NULL,
+    display_before INT(11) NOT NULL,
+    display_after INT(11) NOT NULL,
+    notes TEXT DEFAULT NULL,
+    admin_email VARCHAR(255) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES product_tbl(product_id) ON DELETE CASCADE,
+    INDEX idx_product_transaction (product_id, created_at),
+    INDEX idx_transaction_type (transaction_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- Check if walk_in_purchase exists in enum
+SET @check_enum = (
+    SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'inventory_transactions'
+      AND COLUMN_NAME = 'transaction_type'
+);
+
+-- Add walk_in_purchase if missing
+SET @add_enum = IF(
+    @check_enum LIKE '%walk_in_purchase%',
+    'SELECT "✅ walk_in_purchase already exists in enum" AS Status',
+    "ALTER TABLE inventory_transactions MODIFY transaction_type ENUM('restock', 'move_to_display', 'customer_purchase', 'return', 'adjustment', 'walk_in_purchase') NOT NULL"
+);
+
+PREPARE enum_stmt FROM @add_enum;
+EXECUTE enum_stmt;
+DEALLOCATE PREPARE enum_stmt;
+
+
+-- Drop old trigger (safe - no error if doesn't exist)
+DROP TRIGGER IF EXISTS deduct_warehouse_on_shipped;
+
+-- Create the fixed trigger
+DELIMITER $$
+
+CREATE TRIGGER deduct_warehouse_on_shipped
+AFTER UPDATE ON orders
+FOR EACH ROW
+BEGIN
+    -- Trigger fires when status changes TO 'shipped' from ANY other status
+    -- Works for: confirmed→shipped, processing→shipped, confirmed→processing→shipped
+    
+    IF NEW.status = 'shipped' AND OLD.status != 'shipped' THEN
+        
+        -- Log warehouse deduction for each order item
+        INSERT INTO inventory_transactions (
+            product_id, 
+            transaction_type, 
+            quantity, 
+            inventory_before, 
+            inventory_after, 
+            display_before, 
+            display_after, 
+            notes
+        )
+        SELECT 
+            oi.product_id,
+            'customer_purchase',
+            -oi.quantity,
+            p.inventory_quantity,
+            p.inventory_quantity - oi.quantity,
+            p.display_quantity,
+            p.display_quantity,
+            CONCAT('Order #', NEW.order_id, ' shipped - Warehouse stock deducted (from status: ', OLD.status, ')')
+        FROM order_items oi
+        INNER JOIN product_tbl p ON oi.product_id = p.product_id
+        WHERE oi.order_id = NEW.order_id;
+        
+        -- Deduct warehouse inventory
+        UPDATE product_tbl p
+        INNER JOIN order_items oi ON p.product_id = oi.product_id
+        SET p.inventory_quantity = p.inventory_quantity - oi.quantity
+        WHERE oi.order_id = NEW.order_id;
+        
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+
+SELECT '
+========================================================
+✅ SETUP COMPLETE! 
+========================================================
+Inventory system is ready to use.
+
+System Components Installed:
+- ✅ Warehouse inventory tracking (inventory_quantity)
+- ✅ Display stock tracking (display_quantity)  
+- ✅ Transaction logging (inventory_transactions table)
+- ✅ Walk-in purchase support
+- ✅ Automatic warehouse deduction trigger
+
+How it works:
+1. Online Orders:
+   - Payment verified → Display stock deducted
+   - Status = shipped → Warehouse stock deducted (AUTO)
+
+2. Walk-In Sales:
+   - Sale completed → Both stocks deducted immediately
+
+Run the diagnostic query to verify everything!
+========================================================
+' AS 'Setup Report';
+
+-- Show installed triggers
+SELECT 
+    TRIGGER_NAME as 'Installed Trigger',
+    EVENT_MANIPULATION as 'Event',
+    EVENT_OBJECT_TABLE as 'On Table',
+    ACTION_TIMING as 'When'
+FROM information_schema.TRIGGERS 
+WHERE TRIGGER_SCHEMA = DATABASE()
+  AND TRIGGER_NAME = 'deduct_warehouse_on_shipped';
+
+-- Show sample product inventory
+SELECT 
+    product_id,
+    product_name,
+    inventory_quantity as Warehouse,
+    display_quantity as Display,
+    (inventory_quantity + display_quantity) as Total_Stock
+FROM product_tbl 
+LIMIT 5;
+
+
+
+
+
+
+
+
+
+-- Step 1: Check if payment_status column exists and see its definition
+SHOW COLUMNS FROM orders LIKE 'payment_status';
+
+-- Step 2: Check current values in payment_status column
+SELECT 
+    order_id, 
+    full_name, 
+    payment_method,
+    payment_status,
+    status, 
+    payment_verified_at,
+    order_date
+FROM orders 
+WHERE order_id IN (39, 38, 37, 36, 35) 
+ORDER BY order_id DESC;
+
+-- Step 3: Update orders that are shipped/delivered to have verified payment
+UPDATE orders 
+SET payment_status = 'verified',
+    payment_verified_at = NOW()
+WHERE order_id IN (39, 38, 37, 36, 35)
+  AND status IN ('shipped', 'delivered')
+  AND (payment_status IS NULL OR payment_status = 'pending_verification');
+
+-- Step 4: Verify the update worked
+SELECT 
+    order_id, 
+    full_name, 
+    payment_method,
+    payment_status,
+    status, 
+    payment_verified_at
+FROM orders 
+WHERE order_id IN (39, 38, 37, 36, 35) 
+ORDER BY order_id DESC;
+
+-- Step 5: Check payment_verifications table
+SELECT 
+    pv.verification_id,
+    pv.order_id,
+    pv.verification_status,
+    pv.submitted_at,
+    pv.verified_at,
+    o.payment_status as order_payment_status
+FROM payment_verifications pv
+LEFT JOIN orders o ON pv.order_id = o.order_id
+WHERE pv.order_id IN (39, 38, 37, 36, 35)
+ORDER BY pv.order_id DESC;
+
+
+UPDATE orders 
+SET payment_status = 'verified',
+    payment_verified_at = NOW()
+WHERE status IN ('shipped', 'delivered', 'confirmed', 'processing')
+  AND payment_status IS NULL;
+
+
+
+  -- Step 1: Check current payment_status values
+SELECT 
+    order_id, 
+    full_name, 
+    payment_method,
+    payment_status,
+    status, 
+    payment_verified_at
+FROM orders 
+WHERE order_id IN (39, 38, 37, 36, 35) 
+ORDER BY order_id DESC;
+
+-- Step 2: Update all shipped orders to have verified payment
+UPDATE orders 
+SET payment_status = 'verified',
+    payment_verified_at = NOW()
+WHERE order_id IN (39, 38, 37, 36, 35)
+  AND status = 'shipped';
+
+-- Step 3: Verify the update
+SELECT 
+    order_id, 
+    full_name, 
+    payment_status,
+    status,
+    'Should show: verified' as expected_value
+FROM orders 
+WHERE order_id IN (39, 38, 37, 36, 35) 
+ORDER BY order_id DESC;

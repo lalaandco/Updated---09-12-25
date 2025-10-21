@@ -36,5 +36,4 @@ if (isset($_GET['id'])) {
     $_SESSION["image"] = "images/default.png";
 }
 
-$conn->close();
 ?>
