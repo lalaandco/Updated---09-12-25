@@ -172,21 +172,37 @@ $conn->close();
                             <!-- J&T Tracking for Shipped/Delivered Orders -->
                             <?php if (($order['status'] === 'shipped' || $order['status'] === 'delivered') && $hasTracking): ?>
                                 <div class="tracking-info">
-                                    <div class="tracking-label">📦 J&T Express Tracking Number:</div>
+                                    <div class="tracking-label">J&T Express Tracking Number:</div>
                                     <div class="tracking-number"><?php echo htmlspecialchars($order['tracking_number']); ?></div>
-                                    <a href="https://www.jtexpress.ph/trajectoryQuery?waybillNo=<?php echo urlencode($order['tracking_number']); ?>" 
-                                       target="_blank" 
-                                       class="jnt-track-btn">
-                                        <svg style="width: 16px; height: 16px;" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                                        </svg>
-                                        Track on J&T Express
-                                    </a>
-                                    <p style="margin: 8px 0 0 0; font-size: 11px; color: #666;">
-                                        <?php echo $order['status'] === 'delivered' ? 
-                                            'You can still view the delivery history' : 
-                                            'Click to track your package delivery status'; ?>
-                                    </p>
+                                    
+                                    <?php if ($order['status'] === 'delivered'): ?>
+                                        <div style="background: #d1ecf1; border: 2px solid #17a2b8; padding: 14px 16px; border-radius: 10px; margin-top: 12px;">
+                                            <div style="font-weight: 700; color: #0c5460; margin-bottom: 4px;">
+                                                <i class='bx bx-check-circle'></i> ORDER DELIVERED
+                                            </div>
+                                            <div style="font-size: 13px; color: #0c5460;">
+                                                Your order has been successfully delivered!
+                                            </div>
+                                            <?php if (!$order['delivery_confirmed']): ?>
+                                                <button class="btn-confirm-delivery" onclick="confirmDelivery(<?php echo $order['order_id']; ?>)">
+                                                    <i class='bx bx-check-double'></i> Confirm Delivery
+                                                </button>
+                                            <?php else: ?>
+                                                <div style="margin-top: 8px; font-size: 12px; color: #0c5460;">
+                                                    ✓ Delivery confirmed by you on <?php echo date('M d, Y h:i A', strtotime($order['delivery_confirmed_date'])); ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php else: ?>
+                                        <a href="https://www.jtexpress.ph/trajectoryQuery?waybillNo=<?php echo urlencode($order['tracking_number']); ?>" 
+                                           target="_blank" 
+                                           class="jnt-track-btn">
+                                            <svg style="width: 16px; height: 16px;" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                            </svg>
+                                            Track on J&T Express
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
                             <?php elseif (($order['status'] === 'shipped' || $order['status'] === 'delivered') && !$hasTracking): ?>
                                 <!-- No tracking available -->
@@ -291,44 +307,48 @@ $conn->close();
                         </div>
                         
                         <div class="order-footer">
-                            <button class="btn-view" onclick="viewOrder(<?php echo htmlspecialchars(json_encode($order)); ?>)">
-                                <i class='bx bx-show'></i> View Details
-                            </button>
-                            
-                            <!-- Cancel/Refund Action Buttons -->
-                            <div class="action-buttons">
-                                <?php 
-                                $canCancel = $order['verification_status'] !== 'verified' 
-                                            && $order['status'] !== 'delivered' 
-                                            && $order['status'] !== 'cancelled'
-                                            && $order['status'] !== 'refunded'
-                                            && $order['cancel_status'] !== 'pending';
+                            <div class="order-footer-main-actions">
+                                <button class="btn-view" onclick="viewOrder(<?php echo htmlspecialchars(json_encode($order)); ?>)">
+                                    <i class='bx bx-show'></i> View Details
+                                </button>
                                 
-                                $canRefund = $order['status'] === 'delivered' 
-                                            && $order['refund_status'] !== 'pending'
-                                            && $order['status'] !== 'refunded';
-                                
-                                if ($canCancel): ?>
-                                    <button class="btn-cancel" onclick="openCancelModal(<?php echo $order['order_id']; ?>)">
-                                        <i class='bx bx-x-circle'></i> Cancel Order
-                                    </button>
-                                <?php endif; ?>
-                                
-                                <?php if ($canRefund): ?>
-                                    <button class="btn-refund" onclick="openRefundModal(<?php echo $order['order_id']; ?>)">
-                                        <i class='bx bx-undo'></i> Request Refund
-                                    </button>
-                                <?php endif; ?>
+                                <!-- Cancel/Refund Action Buttons -->
+                                <div class="action-buttons">
+                                    <?php 
+                                    $canCancel = $order['verification_status'] !== 'verified' 
+                                                && $order['status'] !== 'delivered' 
+                                                && $order['status'] !== 'cancelled'
+                                                && $order['status'] !== 'refunded'
+                                                && $order['cancel_status'] !== 'pending';
+                                    
+                                    $canRefund = $order['status'] === 'delivered' 
+                                                && $order['refund_status'] !== 'pending'
+                                                && $order['status'] !== 'refunded';
+                                    
+                                    if ($canCancel): ?>
+                                        <button class="btn-cancel" onclick="openCancelModal(<?php echo $order['order_id']; ?>)">
+                                            <i class='bx bx-x-circle'></i> Cancel Order
+                                        </button>
+                                    <?php endif; ?>
+                                    
+                                    <?php if ($canRefund): ?>
+                                        <button class="btn-refund" onclick="openRefundModal(<?php echo $order['order_id']; ?>)">
+                                            <i class='bx bx-undo'></i> Request Refund
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                             
                             <?php if ($order['status'] === 'delivered' && !empty($items)): ?>
-                                <?php foreach ($items as $item): ?>
-                                    <?php if (!isset($product_ratings[$order['order_id']][$item['product_id']])): ?>
-                                        <button class="btn-rate" onclick="openRatingModal(<?php echo $order['order_id']; ?>, <?php echo $item['product_id']; ?>, '<?php echo htmlspecialchars($item['product_name'], ENT_QUOTES); ?>')">
-                                            <i class='bx bx-star'></i> Rate <?php echo htmlspecialchars($item['product_name']); ?>
-                                        </button>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
+                                <div class="order-footer-rating-actions">
+                                    <?php foreach ($items as $item): ?>
+                                        <?php if (!isset($product_ratings[$order['order_id']][$item['product_id']])): ?>
+                                            <button class="btn-rate" onclick="openRatingModal(<?php echo $order['order_id']; ?>, <?php echo $item['product_id']; ?>, '<?php echo htmlspecialchars($item['product_name'], ENT_QUOTES); ?>')">
+                                                <i class='bx bx-star'></i> Rate <?php echo htmlspecialchars($item['product_name']); ?>
+                                            </button>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </div>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -374,13 +394,8 @@ $conn->close();
                     </div>
                     
                     <div class="form-group">
-                        <label>Review Title</label>
-                        <input type="text" name="review_title" class="form-input" placeholder="Sum up your experience" required>
-                    </div>
-                    
-                    <div class="form-group">
                         <label>Your Review</label>
-                        <textarea name="review_text" class="form-input" rows="4" placeholder="Tell us what you think about this product" required></textarea>
+                        <textarea name="review_text" class="form-input" rows="4" placeholder="Tell us what you think about this product"></textarea>
                     </div>
                     
                     <button type="submit" class="btn-submit-rating">Submit Rating</button>
@@ -826,6 +841,36 @@ $conn->close();
             }
             if (event.target.id === 'orderModal' || event.target.id === 'ratingModal') {
                 event.target.style.display = 'none';
+            }
+        }
+
+        async function confirmDelivery(orderId) {
+            if (!confirm('Are you sure you want to confirm the delivery of this order?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('confirm_delivery.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        order_id: orderId
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Thank you for confirming your delivery!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('An error occurred. Please try again.');
+                console.error(error);
             }
         }
     </script>

@@ -19,6 +19,7 @@ $order_id = intval($_POST['order_id'] ?? 0);
 $reason_description = trim($_POST['reason_description'] ?? '');
 $user_email = $_SESSION['email'];
 
+// Validate inputs
 if ($order_id <= 0) {
     echo json_encode(['success' => false, 'message' => 'Invalid order ID']);
     exit();
@@ -29,8 +30,25 @@ if (empty($reason_description)) {
     exit();
 }
 
-if (!isset($_FILES['refund_video']) || $_FILES['refund_video']['error'] !== UPLOAD_ERR_OK) {
-    echo json_encode(['success' => false, 'message' => 'Please upload a video showing the product condition']);
+// Check if video file was uploaded
+if (!isset($_FILES['refund_video'])) {
+    echo json_encode(['success' => false, 'message' => 'No video file uploaded']);
+    exit();
+}
+
+if ($_FILES['refund_video']['error'] !== UPLOAD_ERR_OK) {
+    $error_messages = [
+        UPLOAD_ERR_INI_SIZE => 'File exceeds upload_max_filesize in php.ini',
+        UPLOAD_ERR_FORM_SIZE => 'File exceeds MAX_FILE_SIZE in HTML form',
+        UPLOAD_ERR_PARTIAL => 'File was only partially uploaded',
+        UPLOAD_ERR_NO_FILE => 'No file was uploaded',
+        UPLOAD_ERR_NO_TMP_DIR => 'Missing temporary folder',
+        UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+        UPLOAD_ERR_EXTENSION => 'Upload stopped by extension'
+    ];
+    
+    $error_msg = $error_messages[$_FILES['refund_video']['error']] ?? 'Unknown upload error';
+    echo json_encode(['success' => false, 'message' => 'Upload error: ' . $error_msg]);
     exit();
 }
 
@@ -39,7 +57,7 @@ try {
     
     // Verify the order belongs to the user and is delivered
     $check_query = "
-        SELECT order_id, status, payment_status
+        SELECT order_id, status, payment_status, full_name
         FROM orders
         WHERE order_id = ? AND user_email = ?
     ";
@@ -50,7 +68,7 @@ try {
     $result = $stmt->get_result();
     
     if ($result->num_rows === 0) {
-        throw new Exception('Order not found or access denied');
+        throw new Exception('Order not found or you do not have permission to access this order');
     }
     
     $order = $result->fetch_assoc();
@@ -58,42 +76,75 @@ try {
     
     // Check if order is delivered
     if ($order['status'] !== 'delivered') {
-        throw new Exception('Refunds can only be requested for delivered orders');
+        throw new Exception('Refunds can only be requested for delivered orders. Current status: ' . ucfirst($order['status']));
     }
     
-    // Check if there's already a pending refund request
-    $check_refund = $conn->prepare("SELECT refund_id FROM order_refunds WHERE order_id = ? AND status = 'pending'");
+    // Check if there's already a pending or approved refund request
+    $check_refund = $conn->prepare("
+        SELECT refund_id, status 
+        FROM order_refunds 
+        WHERE order_id = ? 
+        AND status IN ('pending', 'approved')
+    ");
     $check_refund->bind_param("i", $order_id);
     $check_refund->execute();
-    if ($check_refund->get_result()->num_rows > 0) {
-        throw new Exception('You already have a pending refund request for this order');
+    $refund_result = $check_refund->get_result();
+    
+    if ($refund_result->num_rows > 0) {
+        $existing = $refund_result->fetch_assoc();
+        throw new Exception('You already have a ' . $existing['status'] . ' refund request for this order');
     }
     $check_refund->close();
     
     // Handle video upload
     $file = $_FILES['refund_video'];
+    
+    // Validate file type
     $allowed_types = ['video/mp4', 'video/mpeg', 'video/quicktime', 'video/x-msvideo', 'video/webm'];
-    $max_size = 50 * 1024 * 1024; // 50MB
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime_type = finfo_file($finfo, $file['tmp_name']);
+    finfo_close($finfo);
     
-    if (!in_array($file['type'], $allowed_types)) {
-        throw new Exception('Invalid file type. Please upload MP4, MOV, AVI, or WEBM video');
+    if (!in_array($mime_type, $allowed_types)) {
+        throw new Exception('Invalid file type. Please upload a video file (MP4, MOV, AVI, or WEBM). Uploaded type: ' . $mime_type);
     }
     
+    // Validate file size (50MB max)
+    $max_size = 50 * 1024 * 1024; // 50MB in bytes
     if ($file['size'] > $max_size) {
-        throw new Exception('Video file too large. Maximum size is 50MB');
+        throw new Exception('Video file is too large. Maximum size is 50MB. Your file: ' . round($file['size'] / (1024 * 1024), 2) . 'MB');
     }
     
+    if ($file['size'] === 0) {
+        throw new Exception('Uploaded file is empty');
+    }
+    
+    // Create upload directory if it doesn't exist
     $upload_dir = 'uploads/refund_videos/';
     if (!is_dir($upload_dir)) {
-        mkdir($upload_dir, 0755, true);
+        if (!mkdir($upload_dir, 0755, true)) {
+            throw new Exception('Failed to create upload directory');
+        }
     }
     
-    $file_extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-    $filename = time() . '_order_' . $order_id . '.' . $file_extension;
+    // Check if directory is writable
+    if (!is_writable($upload_dir)) {
+        throw new Exception('Upload directory is not writable');
+    }
+    
+    // Generate unique filename
+    $file_extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $filename = 'refund_' . $order_id . '_' . time() . '_' . uniqid() . '.' . $file_extension;
     $filepath = $upload_dir . $filename;
     
+    // Move uploaded file
     if (!move_uploaded_file($file['tmp_name'], $filepath)) {
-        throw new Exception('Failed to upload video file');
+        throw new Exception('Failed to save uploaded video file. Check server permissions.');
+    }
+    
+    // Verify file was actually saved
+    if (!file_exists($filepath)) {
+        throw new Exception('File upload verification failed');
     }
     
     // Insert refund request
@@ -104,8 +155,11 @@ try {
     $insert_stmt->bind_param("isss", $order_id, $user_email, $reason_description, $filepath);
     
     if (!$insert_stmt->execute()) {
-        @unlink($filepath); // Delete uploaded file if database insert fails
-        throw new Exception('Failed to submit refund request');
+        // Delete uploaded file if database insert fails
+        if (file_exists($filepath)) {
+            @unlink($filepath);
+        }
+        throw new Exception('Failed to submit refund request to database: ' . $insert_stmt->error);
     }
     
     $insert_stmt->close();
@@ -113,21 +167,33 @@ try {
     // Update order status to indicate refund pending
     $update_stmt = $conn->prepare("UPDATE orders SET status = 'refund_pending' WHERE order_id = ?");
     $update_stmt->bind_param("i", $order_id);
-    $update_stmt->execute();
+    
+    if (!$update_stmt->execute()) {
+        throw new Exception('Failed to update order status: ' . $update_stmt->error);
+    }
+    
     $update_stmt->close();
     
+    // Commit transaction
     $conn->commit();
     
     echo json_encode([
         'success' => true,
-        'message' => 'Refund request submitted successfully. Admin will review your request and contact you.'
+        'message' => 'Refund request submitted successfully! Our admin team will review your request and contact you within 2-3 business days.'
     ]);
     
 } catch (Exception $e) {
+    // Rollback transaction
     $conn->rollback();
+    
+    // Clean up uploaded file if exists
     if (isset($filepath) && file_exists($filepath)) {
         @unlink($filepath);
     }
+    
+    // Log error for debugging (optional)
+    error_log("Refund request error: " . $e->getMessage());
+    
     echo json_encode([
         'success' => false,
         'message' => $e->getMessage()

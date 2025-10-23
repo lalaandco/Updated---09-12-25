@@ -70,25 +70,55 @@ try {
         $update_order->execute();
         $update_order->close();
         
-        // ✅ RESTORE INVENTORY - Add quantities back to storage (inventory_quantity)
+        // ❌ REMOVED: DO NOT restore inventory (items are damaged/used)
+        // Instead, log the refund as a loss in inventory transactions for tracking
+        
         // Get all items from this order
-        $items_query = "SELECT product_id, quantity FROM order_items WHERE order_id = ?";
+        $items_query = "SELECT product_id, quantity, product_name FROM order_items WHERE order_id = ?";
         $stmt = $conn->prepare($items_query);
         $stmt->bind_param("i", $order_id);
         $stmt->execute();
         $items = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         $stmt->close();
         
-        // Restore each item's quantity to storage
+        // Log refund as inventory adjustment (for tracking only - no quantity change)
         foreach ($items as $item) {
-            $restore_stmt = $conn->prepare("
-                UPDATE product_tbl 
-                SET inventory_quantity = inventory_quantity + ? 
-                WHERE product_id = ?
+            // Get current inventory levels (no changes, just for logging)
+            $log_stmt = $conn->prepare("SELECT inventory_quantity, display_quantity FROM product_tbl WHERE product_id = ?");
+            $log_stmt->bind_param("i", $item['product_id']);
+            $log_stmt->execute();
+            $log_result = $log_stmt->get_result();
+            $log_data = $log_result->fetch_assoc();
+            $log_stmt->close();
+            
+            $inv_before = $log_data['inventory_quantity'];
+            $inv_after = $inv_before; // No change
+            $display_before = $log_data['display_quantity'];
+            $display_after = $display_before; // No change
+            
+            // Log transaction for tracking (negative quantity shows it's a loss)
+            $notes = "Order #{$order_id} refunded - Item damaged/used, not returned to inventory. Loss recorded.";
+            $negative_qty = -$item['quantity']; // Negative to show it's a loss
+            
+            $transaction_stmt = $conn->prepare("
+                INSERT INTO inventory_transactions 
+                (product_id, transaction_type, quantity, inventory_before, inventory_after, 
+                 display_before, display_after, notes, admin_email) 
+                VALUES (?, 'adjustment', ?, ?, ?, ?, ?, ?, ?)
             ");
-            $restore_stmt->bind_param("ii", $item['quantity'], $item['product_id']);
-            $restore_stmt->execute();
-            $restore_stmt->close();
+            $admin_email = $_SESSION['admin_email'];
+            $transaction_stmt->bind_param("iiiiisss", 
+                $item['product_id'], 
+                $negative_qty, 
+                $inv_before, 
+                $inv_after, 
+                $display_before, 
+                $display_after, 
+                $notes,
+                $admin_email
+            );
+            $transaction_stmt->execute();
+            $transaction_stmt->close();
         }
         
         // Mark payment for refund
@@ -101,7 +131,7 @@ try {
         $update_payment->execute();
         $update_payment->close();
         
-        $message = 'Refund approved successfully. Inventory has been restored. Please process customer refund.';
+        $message = 'Refund approved successfully. Items NOT returned to inventory (damaged/used). Please process customer refund.';
         
     } else { // reject
         // Update refund status

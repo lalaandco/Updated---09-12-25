@@ -30,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
     $stmt->close();
 }
 
-
 $all_transactions = [];
 
 // Fetch ONLINE ORDERS
@@ -107,14 +106,6 @@ if ($sale_type === 'online' || $sale_type === 'all') {
     $stmt->execute();
     $online_orders = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     
-    // ✅ DEBUG CODE - MOVED TO CORRECT POSITION (after query executes)
-    if (!empty($online_orders)) {
-        echo "<!-- DEBUG First Order Payment Status: '" . 
-            htmlspecialchars($online_orders[0]['payment_status'] ?? 'NULL') . "' -->";
-        echo "<!-- DEBUG First Order ID: " . $online_orders[0]['id'] . " -->";
-        echo "<!-- DEBUG Total Orders Fetched: " . count($online_orders) . " -->";
-    }
-    
     $all_transactions = array_merge($all_transactions, $online_orders);
     $stmt->close();
 }
@@ -178,6 +169,26 @@ renderAdminHeader();
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="adminOrderStyle.css">
     <title>Sales Management - Admin Panel</title>
+    <style>
+        /* Add refund status badge styling */
+        .status-badge.status-refunded {
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffb74d;
+        }
+        
+        .status-badge.status-cancellation_pending {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef5350;
+        }
+        
+        .status-badge.status-refund_pending {
+            background: #fff3e0;
+            color: #ef6c00;
+            border: 1px solid #ff9800;
+        }
+    </style>
 </head>
 <body>
     <div class="admin-container">
@@ -227,6 +238,9 @@ renderAdminHeader();
                             <option value="shipped" <?php echo $status_filter === 'shipped' ? 'selected' : ''; ?>>Shipped</option>
                             <option value="delivered" <?php echo $status_filter === 'delivered' ? 'selected' : ''; ?>>Delivered</option>
                             <option value="cancelled" <?php echo $status_filter === 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+                            <option value="refunded" <?php echo $status_filter === 'refunded' ? 'selected' : ''; ?>>Refunded</option>
+                            <option value="cancellation_pending" <?php echo $status_filter === 'cancellation_pending' ? 'selected' : ''; ?>>Cancellation Pending</option>
+                            <option value="refund_pending" <?php echo $status_filter === 'refund_pending' ? 'selected' : ''; ?>>Refund Pending</option>
                         </select>
                     </div>
                     
@@ -325,29 +339,27 @@ renderAdminHeader();
                                     </span>
                                     <?php if ($transaction['transaction_type'] === 'online'): ?>
                                         <?php
-                                        // Get payment status with proper handling
                                         $payment_status = $transaction['payment_status'] ?? 'pending_verification';
                                         $payment_status = strtolower(trim($payment_status));
                                         
-                                        // Map status to display badge
                                         switch($payment_status) {
                                             case 'verified':
                                                 $status_class = 'verified';
-                                                $status_icon = 'Verified';
+                                                $status_icon = '✓ Verified';
                                                 break;
                                             case 'pending_verification':
                                             case 'pending':
                                             case '':
                                                 $status_class = 'pending';
-                                                $status_icon = 'Pending';
+                                                $status_icon = '⏳ Pending';
                                                 break;
                                             case 'failed':
                                                 $status_class = 'failed';
-                                                $status_icon = 'Failed';
+                                                $status_icon = '✗ Failed';
                                                 break;
                                             case 'cancelled':
                                                 $status_class = 'cancelled';
-                                                $status_icon = 'Cancelled';
+                                                $status_icon = '⊘ Cancelled';
                                                 break;
                                             default:
                                                 $status_class = 'pending';
@@ -364,8 +376,30 @@ renderAdminHeader();
                             </td>
                             <td>
                                 <?php if ($transaction['transaction_type'] === 'online'): ?>
-                                    <span class="status-badge status-<?php echo $transaction['status']; ?>">
-                                        <?php echo ucfirst($transaction['status']); ?>
+                                    <?php
+                                    // Map status to display text and class
+                                    $status = $transaction['status'];
+                                    $status_display = ucfirst(str_replace('_', ' ', $status));
+                                    $status_class = 'status-' . $status;
+                                    
+                                    // Special handling for specific statuses
+                                    switch($status) {
+                                        case 'refunded':
+                                            $status_display = '↩️ Refunded';
+                                            break;
+                                        case 'refund_pending':
+                                            $status_display = '⏳ Refund Pending';
+                                            break;
+                                        case 'cancellation_pending':
+                                            $status_display = '⏳ Cancellation Pending';
+                                            break;
+                                        case 'cancelled':
+                                            $status_display = '❌ Cancelled';
+                                            break;
+                                    }
+                                    ?>
+                                    <span class="status-badge <?php echo $status_class; ?>">
+                                        <?php echo $status_display; ?>
                                     </span>
                                 <?php else: ?>
                                     <span class="status-badge status-delivered">Completed</span>
@@ -376,7 +410,7 @@ renderAdminHeader();
                                     <button class="btn btn-info" onclick="viewTransaction('<?php echo $transaction['transaction_type']; ?>', <?php echo $transaction['id']; ?>)">
                                         View
                                     </button>
-                                    <?php if ($transaction['transaction_type'] === 'online'): ?>
+                                    <?php if ($transaction['transaction_type'] === 'online' && !in_array($transaction['status'], ['refunded', 'cancelled'])): ?>
                                         <button class="btn btn-primary" onclick="updateOrder(<?php echo $transaction['id']; ?>)">
                                             Update
                                         </button>
@@ -539,6 +573,27 @@ renderAdminHeader();
                         paymentStatusBadge = '<span class="payment-status-badge payment-cancelled">⊘ CANCELLED</span>';
                     }
                     
+                    // Status badge for order status
+                    let orderStatusBadge = '';
+                    const orderStatus = order.status;
+                    
+                    switch(orderStatus) {
+                        case 'refunded':
+                            orderStatusBadge = '<span class="status-badge status-refunded">↩️ REFUNDED</span>';
+                            break;
+                        case 'refund_pending':
+                            orderStatusBadge = '<span class="status-badge status-refund_pending">⏳ REFUND PENDING</span>';
+                            break;
+                        case 'cancellation_pending':
+                            orderStatusBadge = '<span class="status-badge status-cancellation_pending">⏳ CANCELLATION PENDING</span>';
+                            break;
+                        case 'cancelled':
+                            orderStatusBadge = '<span class="status-badge status-cancelled">❌ CANCELLED</span>';
+                            break;
+                        default:
+                            orderStatusBadge = `<span class="status-badge status-${orderStatus}">${orderStatus.toUpperCase()}</span>`;
+                    }
+                    
                     let trackingDisplay = '';
                     if (order.status === 'shipped' || order.status === 'delivered') {
                         if (order.tracking_number) {
@@ -553,14 +608,8 @@ renderAdminHeader();
                                     <a href="https://www.jtexpress.ph/trajectoryQuery?waybillNo=${encodeURIComponent(order.tracking_number)}" 
                                     target="_blank" 
                                     class="jnt-track-link">
-                                        <svg style="width: 16px; height: 16px;" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                                        </svg>
                                         Track on J&T Express
                                     </a>
-                                    <div style="margin-top: 10px; font-size: 11px; color: #666;">
-                                        Customer can track their package using this number on J&T Express website
-                                    </div>
                                 </div>
                             `;
                         } else {
@@ -568,21 +617,9 @@ renderAdminHeader();
                                 <div class="jnt-instruction">
                                     <strong>⚠️ Tracking Number Required</strong>
                                     <p style="margin: 5px 0;">Please go to your nearest J&T Express branch to get the waybill and tracking number for this order.</p>
-                                    <p style="margin: 5px 0 0 0; font-size: 11px;">Once you have the tracking number, use the "Update" button to add it to this order.</p>
                                 </div>
                             `;
                         }
-                    } else {
-                        trackingDisplay = `
-                            <div class="detail-row">
-                                <span class="detail-label">Tracking Number:</span>
-                                <span style="color: #999; font-style: italic;">Will be assigned when order status is changed to "Shipped"</span>
-                            </div>
-                            <div class="jnt-instruction">
-                                <strong>📋 Next Steps:</strong>
-                                <p style="margin: 5px 0 0 0;">When ready to ship, go to J&T Express branch to get the waybill, then update order status to "Shipped" and add the tracking number.</p>
-                            </div>
-                        `;
                     }
                     
                     document.getElementById('modalBody').innerHTML = `
@@ -615,7 +652,7 @@ renderAdminHeader();
                                 </div>
                                 <div class="detail-row">
                                     <span class="detail-label">Status:</span>
-                                    <span class="status-badge status-${order.status}">${order.status.toUpperCase()}</span>
+                                    ${orderStatusBadge}
                                 </div>
                                 <div class="detail-row">
                                     <span class="detail-label">Payment Status:</span>
@@ -664,6 +701,12 @@ renderAdminHeader();
                     if (data.success) {
                         const order = data.order;
                         
+                        // Check if order is refunded or cancelled
+                        if (order.status === 'refunded' || order.status === 'cancelled') {
+                            alert('This order has been ' + order.status + ' and cannot be updated.');
+                            return;
+                        }
+                        
                         document.getElementById('modalTitle').textContent = `Update Order #${String(order.order_id).padStart(8, '0')}`;
                         
                         const showTrackingHelp = order.status === 'processing' || order.status === 'shipped' || order.status === 'delivered';
@@ -677,6 +720,18 @@ renderAdminHeader();
                             paymentStatusDisplay = '<span class="payment-status-badge payment-pending">⏳ PENDING</span>';
                         } else if (paymentStatus === 'failed') {
                             paymentStatusDisplay = '<span class="payment-status-badge payment-failed">✗ FAILED</span>';
+                        }
+                        
+                        let currentStatusBadge = '';
+                        switch(order.status) {
+                            case 'refund_pending':
+                                currentStatusBadge = '<span class="status-badge status-refund_pending">⏳ REFUND PENDING</span>';
+                                break;
+                            case 'cancellation_pending':
+                                currentStatusBadge = '<span class="status-badge status-cancellation_pending">⏳ CANCELLATION PENDING</span>';
+                                break;
+                            default:
+                                currentStatusBadge = `<span class="status-badge status-${order.status}">${order.status.toUpperCase()}</span>`;
                         }
                         
                         document.getElementById('modalBody').innerHTML = `
@@ -693,7 +748,7 @@ renderAdminHeader();
                                     </div>
                                     <div class="detail-row">
                                         <span class="detail-label">Current Status:</span>
-                                        <span class="status-badge status-${order.status}">${order.status.toUpperCase()}</span>
+                                        ${currentStatusBadge}
                                     </div>
                                     <div class="detail-row">
                                         <span class="detail-label">Tracking:</span>

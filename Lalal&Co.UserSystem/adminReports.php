@@ -357,7 +357,7 @@ renderAdminHeader()
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="adminStyle.css">
-    <link rel="stylesheet" href="adminReports.css">
+    <link rel="stylesheet" href="adminReport.css">
     <title>Reports - Admin Dashboard</title>
 </head>
 <body>
@@ -425,9 +425,9 @@ renderAdminHeader()
                     </div>
                 </div>
                 <!-- ✅ NEW: Cancelled Orders Card -->
-                <div class="summary-card" style="border-left: 4px solid #f44336;">
-                    <h3>🚫 Cancelled Orders</h3>
-                    <div class="value" style="color: #f44336;">
+                <div class="summary-card">
+                    <h3>Cancelled Orders</h3>
+                    <div class="value">
                         <?php echo $summary['cancelled_orders'] ?? 0; ?>
                     </div>
                     <div class="subtext">
@@ -436,9 +436,9 @@ renderAdminHeader()
                 </div>
 
                 <!-- ✅ NEW: Refunded Orders Card -->
-                <div class="summary-card" style="border-left: 4px solid #ff9800;">
-                    <h3>↩️ Refunded Orders</h3>
-                    <div class="value" style="color: #ff9800;">
+                <div class="summary-card" >
+                    <h3>  Refunded Orders</h3>
+                    <div class="value" >
                         <?php echo $summary['refunded_orders'] ?? 0; ?>
                     </div>
                     <div class="subtext">
@@ -447,9 +447,9 @@ renderAdminHeader()
                 </div>
 
                 <!-- ✅ NEW: Net Revenue Card -->
-                <div class="summary-card" style="border-left: 4px solid #2196F3;">
-                    <h3>💰 Net Revenue</h3>
-                    <div class="value" style="color: #2196F3;">
+                <div class="summary-card">
+                    <h3>Net Revenue</h3>
+                    <div class="value" >
                         ₱<?php echo number_format($summary['net_revenue'] ?? $summary['total_revenue'], 2); ?>
                     </div>
                     <div class="subtext">
@@ -513,10 +513,27 @@ renderAdminHeader()
                             <td><strong>₱<?php echo number_format($sale['walkin_revenue'] ?? 0, 2); ?></strong></td>
                             <td><strong>₱<?php echo number_format($sale['total_revenue'], 2); ?></strong></td>
                             <td>
-                                <?php if ($sale['status'] == 'cancelled'): ?>
-                                    <span class="badge-cancelled">Cancelled</span>
-                                <?php elseif ($sale['status'] == 'refunded'): ?>
-                                    <span class="badge-refunded">Refunded</span>
+                                <?php 
+                                // Show cancelled/refunded counts if any exist
+                                $cancelled = $sale['cancelled_orders'] ?? 0;
+                                $refunded = $sale['refunded_orders'] ?? 0;
+                                
+                                if ($cancelled > 0 || $refunded > 0): 
+                                ?>
+                                    <div style="display: flex; gap: 5px; flex-direction: column;">
+                                        <?php if ($cancelled > 0): ?>
+                                            <span class="badge-cancelled" style="font-size: 11px; padding: 3px 8px;">
+                                                🚫 <?php echo $cancelled; ?> Cancelled
+                                            </span>
+                                        <?php endif; ?>
+                                        <?php if ($refunded > 0): ?>
+                                            <span class="badge-refunded" style="font-size: 11px; padding: 3px 8px;">
+                                                ↩️ <?php echo $refunded; ?> Refunded
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php else: ?>
+                                    <span style="color: #4CAF50; font-weight: 600;">✓ All Completed</span>
                                 <?php endif; ?>
                             </td>
                         </tr>

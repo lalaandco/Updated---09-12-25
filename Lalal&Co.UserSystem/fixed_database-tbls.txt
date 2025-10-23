@@ -1090,3 +1090,278 @@ CREATE TABLE IF NOT EXISTS `order_refunds` (
 -- Add indexes for better performance
 CREATE INDEX idx_cancellation_status ON order_cancellations(status, created_at);
 CREATE INDEX idx_refund_status ON order_refunds(status, created_at);
+
+
+
+ALTER TABLE orders 
+ADD COLUMN delivery_confirmed TINYINT(1) DEFAULT 0,
+ADD COLUMN delivery_confirmed_date DATETIME DEFAULT NULL;
+
+
+
+
+-- =====================================
+-- NOTIFICATION SYSTEM DATABASE SCHEMA
+-- =====================================
+
+-- Create admin_notifications table for persistent notifications
+CREATE TABLE IF NOT EXISTS admin_notifications (
+    notification_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    notification_type ENUM('low_stock', 'pending_order', 'pending_payment', 'pending_purchase', 
+                          'pending_cancellation', 'pending_refund', 'delivery_confirmed') NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    related_id INT(11) DEFAULT NULL COMMENT 'Order ID, Product ID, etc.',
+    related_table VARCHAR(100) DEFAULT NULL COMMENT 'orders, product_tbl, etc.',
+    severity ENUM('info', 'warning', 'critical', 'success') DEFAULT 'info',
+    is_read TINYINT(1) DEFAULT 0,
+    link VARCHAR(500) DEFAULT NULL,
+    icon VARCHAR(50) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    read_at TIMESTAMP NULL DEFAULT NULL,
+    read_by VARCHAR(255) DEFAULT NULL,
+    INDEX idx_type (notification_type),
+    INDEX idx_read (is_read),
+    INDEX idx_created (created_at),
+    INDEX idx_related (related_table, related_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Create notification_log table for historical tracking
+CREATE TABLE IF NOT EXISTS notification_log (
+    log_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    notification_id INT(11) DEFAULT NULL,
+    notification_type VARCHAR(100) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    related_id INT(11) DEFAULT NULL,
+    related_table VARCHAR(100) DEFAULT NULL,
+    severity VARCHAR(50) DEFAULT NULL,
+    triggered_by VARCHAR(255) DEFAULT NULL COMMENT 'User email or system',
+    action_taken VARCHAR(255) DEFAULT NULL COMMENT 'What action was taken',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    archived_at TIMESTAMP NULL DEFAULT NULL,
+    INDEX idx_type (notification_type),
+    INDEX idx_created (created_at),
+    INDEX idx_related (related_table, related_id),
+    FOREIGN KEY (notification_id) REFERENCES admin_notifications(notification_id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- =====================================
+-- TRIGGER: Create notification when customer confirms delivery
+-- =====================================
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS after_delivery_confirmed$$
+
+CREATE TRIGGER after_delivery_confirmed
+AFTER UPDATE ON orders
+FOR EACH ROW
+BEGIN
+    -- When customer confirms delivery
+    IF NEW.delivery_confirmed = 1 AND OLD.delivery_confirmed = 0 THEN
+        
+        -- Insert notification for admin
+        INSERT INTO admin_notifications (
+            notification_type,
+            title,
+            message,
+            related_id,
+            related_table,
+            severity,
+            link,
+            icon
+        ) VALUES (
+            'delivery_confirmed',
+            'Delivery Confirmed',
+            CONCAT('Customer "', NEW.full_name, '" confirmed delivery of Order #', 
+                   LPAD(NEW.order_id, 8, '0')),
+            NEW.order_id,
+            'orders',
+            'success',
+            CONCAT('adminOrders.php?order_id=', NEW.order_id),
+            'bx-check-circle'
+        );
+        
+        -- Log the notification
+        INSERT INTO notification_log (
+            notification_type,
+            title,
+            message,
+            related_id,
+            related_table,
+            severity,
+            triggered_by,
+            action_taken
+        ) VALUES (
+            'delivery_confirmed',
+            'Delivery Confirmed',
+            CONCAT('Customer "', NEW.full_name, '" confirmed delivery of Order #', 
+                   LPAD(NEW.order_id, 8, '0')),
+            NEW.order_id,
+            'orders',
+            'success',
+            NEW.user_email,
+            'delivery_confirmed'
+        );
+        
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- =====================================
+-- STORED PROCEDURE: Mark notification as read
+-- =====================================
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS mark_notification_read$$
+
+CREATE PROCEDURE mark_notification_read(
+    IN p_notification_id INT,
+    IN p_admin_email VARCHAR(255)
+)
+BEGIN
+    UPDATE admin_notifications
+    SET 
+        is_read = 1,
+        read_at = NOW(),
+        read_by = p_admin_email
+    WHERE notification_id = p_notification_id;
+    
+    -- Log the read action
+    INSERT INTO notification_log (
+        notification_id,
+        notification_type,
+        title,
+        message,
+        related_id,
+        related_table,
+        severity,
+        triggered_by,
+        action_taken
+    )
+    SELECT 
+        notification_id,
+        notification_type,
+        title,
+        CONCAT('Notification read by admin: ', p_admin_email),
+        related_id,
+        related_table,
+        severity,
+        p_admin_email,
+        'notification_read'
+    FROM admin_notifications
+    WHERE notification_id = p_notification_id;
+END$$
+
+DELIMITER ;
+
+-- =====================================
+-- STORED PROCEDURE: Archive old notifications
+-- =====================================
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS archive_old_notifications$$
+
+CREATE PROCEDURE archive_old_notifications(
+    IN days_old INT
+)
+BEGIN
+    -- Archive read notifications older than X days
+    INSERT INTO notification_log (
+        notification_id,
+        notification_type,
+        title,
+        message,
+        related_id,
+        related_table,
+        severity,
+        triggered_by,
+        action_taken,
+        created_at,
+        archived_at
+    )
+    SELECT 
+        notification_id,
+        notification_type,
+        title,
+        message,
+        related_id,
+        related_table,
+        severity,
+        read_by,
+        'auto_archived',
+        created_at,
+        NOW()
+    FROM admin_notifications
+    WHERE is_read = 1 
+      AND read_at < DATE_SUB(NOW(), INTERVAL days_old DAY);
+    
+    -- Delete archived notifications
+    DELETE FROM admin_notifications
+    WHERE is_read = 1 
+      AND read_at < DATE_SUB(NOW(), INTERVAL days_old DAY);
+END$$
+
+DELIMITER ;
+
+-- =====================================
+-- VIEW: Unread notifications summary
+-- =====================================
+
+CREATE OR REPLACE VIEW v_unread_notifications AS
+SELECT 
+    notification_type,
+    COUNT(*) as unread_count,
+    MIN(created_at) as oldest_notification,
+    MAX(created_at) as newest_notification
+FROM admin_notifications
+WHERE is_read = 0
+GROUP BY notification_type;
+
+-- =====================================
+-- VIEW: Recent notification activity
+-- =====================================
+
+CREATE OR REPLACE VIEW v_notification_activity AS
+SELECT 
+    nl.log_id,
+    nl.notification_type,
+    nl.title,
+    nl.message,
+    nl.related_id,
+    nl.related_table,
+    nl.severity,
+    nl.triggered_by,
+    nl.action_taken,
+    nl.created_at,
+    CASE 
+        WHEN nl.archived_at IS NOT NULL THEN 'Archived'
+        WHEN an.is_read = 1 THEN 'Read'
+        ELSE 'Active'
+    END as status
+FROM notification_log nl
+LEFT JOIN admin_notifications an ON nl.notification_id = an.notification_id
+ORDER BY nl.created_at DESC
+LIMIT 100;
+
+
+
+ALTER TABLE `orders` 
+MODIFY COLUMN `status` ENUM(
+    'pending',
+    'confirmed',
+    'processing',
+    'shipped',
+    'delivered',
+    'cancelled',
+    'cancellation_pending',
+    'refund_pending',
+    'refunded'
+) NOT NULL DEFAULT 'pending';
+
+
+

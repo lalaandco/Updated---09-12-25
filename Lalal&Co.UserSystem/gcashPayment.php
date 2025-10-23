@@ -203,36 +203,68 @@ $conn->close();
         </div>
     </div>
 
+    <div class="fullscreen-preview" id="fullscreen-preview">
+        <button class="close-preview" onclick="closeFullscreen()">×</button>
+        <img id="fullscreen-img" src="#" alt="Full Screen Preview">
+    </div>
+
     <footer>
         <p>© 2025 Lalal & Co. All rights reserved.</p>
     </footer>
 
     <script>
-        document.getElementById('preview-btn').addEventListener('click', function() {
-            const screenshotInput = document.getElementById('screenshot');
-            if (screenshotInput.files && screenshotInput.files[0]) {
+        function previewImage(file) {
+            if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('preview-img').src = e.target.result;
-                    document.getElementById('preview-container').style.display = 'block';
-                };
-                reader.readAsDataURL(screenshotInput.files[0]);
-            } else {
-                alert('Please select a screenshot file first');
-            }
-        });
+                const previewContainer = document.getElementById('preview-container');
+                const previewImg = document.getElementById('preview-img');
+                const fullscreenImg = document.getElementById('fullscreen-img');
 
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    fullscreenImg.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Preview when file is selected
         document.getElementById('screenshot').addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('preview-img').src = e.target.result;
-                    document.getElementById('preview-container').style.display = 'block';
-                };
-                reader.readAsDataURL(this.files[0]);
+            const file = this.files[0];
+            if (file) {
+                previewImage(file);
+            } else {
+                document.getElementById('preview-container').style.display = 'none';
             }
         });
 
+        // Open fullscreen preview when clicking on preview image
+        document.getElementById('preview-img').addEventListener('click', function() {
+            document.getElementById('fullscreen-preview').classList.add('active');
+        });
+
+        // Close fullscreen preview
+        function closeFullscreen() {
+            document.getElementById('fullscreen-preview').classList.remove('active');
+        }
+
+        // Close fullscreen preview when clicking outside the image
+        document.getElementById('fullscreen-preview').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFullscreen();
+            }
+        });
+
+        // Close fullscreen preview with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('fullscreen-preview').classList.contains('active')) {
+                closeFullscreen();
+            }
+        });
+
+        // Form validation
         document.querySelector('form').addEventListener('submit', function(e) {
             const transactionId = document.getElementById('gcash_transaction_id').value.trim();
             const screenshot = document.getElementById('screenshot').files[0];
