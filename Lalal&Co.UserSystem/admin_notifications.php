@@ -1,6 +1,5 @@
 <?php
 
-
 if (!isset($_SESSION['admin_logged_in'])) {
     exit();
 }
@@ -17,26 +16,64 @@ class AdminNotifications {
     }
     
     private function loadNotifications() {
-        // 1. Low Stock Alerts (Reorder Point)
-        $this->getLowStockAlerts();
+        // Load unread notifications from database
+        $this->loadPersistedNotifications();
         
-        // 2. Pending Orders
-        $this->getPendingOrders();
-        
-        // 3. Payment Verifications
-        $this->getPendingPayments();
-        
-        // 4. Purchase Orders Status
-        $this->getPendingPurchaseOrders();
-        
-        // 5. Pending Cancellations (NEW)
-        $this->getPendingCancellations();
-        
-        // 6. Pending Refunds (NEW)
-        $this->getPendingRefunds();
+        // Also check for real-time alerts (for backward compatibility)
+        $this->checkLowStockAlerts();
+        $this->checkPendingOrders();
+        $this->checkPendingPayments();
+        $this->checkPendingPurchaseOrders();
+        $this->checkPendingCancellations();
+        $this->checkPendingRefunds();
     }
     
-    private function getLowStockAlerts() {
+    /**
+     * Load persisted notifications from database
+     */
+    private function loadPersistedNotifications() {
+        $query = "
+            SELECT 
+                notification_id,
+                notification_type,
+                title,
+                message,
+                related_id,
+                related_table,
+                severity,
+                link,
+                icon,
+                created_at
+            FROM admin_notifications
+            WHERE is_read = 0
+            ORDER BY created_at DESC
+        ";
+        
+        $result = $this->conn->query($query);
+        
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                $this->notifications[] = [
+                    'notification_id' => $row['notification_id'],
+                    'type' => $row['notification_type'],
+                    'title' => $row['title'],
+                    'message' => $row['message'],
+                    'related_id' => $row['related_id'],
+                    'related_table' => $row['related_table'],
+                    'severity' => $row['severity'],
+                    'link' => $row['link'],
+                    'icon' => $row['icon'],
+                    'created_at' => $row['created_at'],
+                    'is_persisted' => true
+                ];
+            }
+        }
+    }
+    
+    /**
+     * Check and create low stock alert notifications
+     */
+    private function checkLowStockAlerts() {
         $query = "
             SELECT 
                 COUNT(*) as count,
@@ -47,21 +84,29 @@ class AdminNotifications {
         $result = $this->conn->query($query)->fetch_assoc();
         
         if ($result['count'] > 0) {
-            $this->notifications[] = [
-                'type' => 'low_stock',
-                'title' => 'Low Stock Alert',
-                'message' => $result['count'] . ' products low on stock',
-                'count' => $result['count'],
-                'critical' => $result['critical_count'] > 0,
-                'critical_count' => $result['critical_count'],
-                'link' => 'adminInventory.php',
-                'icon' => 'bx-package',
-                'severity' => $result['critical_count'] > 0 ? 'critical' : 'warning'
-            ];
+            // Check if notification already exists
+            $existing = $this->conn->query("
+                SELECT notification_id FROM admin_notifications 
+                WHERE notification_type = 'low_stock' AND is_read = 0
+            ")->num_rows;
+            
+            if ($existing == 0) {
+                // Create new notification
+                $this->createNotification(
+                    'low_stock',
+                    'Low Stock Alert',
+                    $result['count'] . ' products low on stock',
+                    null,
+                    'product_tbl',
+                    $result['critical_count'] > 0 ? 'critical' : 'warning',
+                    'adminInventory.php',
+                    'bx-package'
+                );
+            }
         }
     }
     
-    private function getPendingOrders() {
+    private function checkPendingOrders() {
         $query = "
             SELECT COUNT(*) as count
             FROM orders
@@ -70,19 +115,29 @@ class AdminNotifications {
         $result = $this->conn->query($query)->fetch_assoc();
         
         if ($result['count'] > 0) {
-            $this->notifications[] = [
-                'type' => 'pending_orders',
-                'title' => 'Pending Orders',
-                'message' => $result['count'] . ' order(s) awaiting confirmation',
-                'count' => $result['count'],
-                'link' => 'adminOrders.php?status=pending',
-                'icon' => 'bx-shopping-bag',
-                'severity' => 'info'
-            ];
+            $existing = $this->conn->query("
+                SELECT notification_id FROM admin_notifications 
+                WHERE notification_type = 'pending_order' 
+                  AND DATE(created_at) = CURDATE()
+                  AND is_read = 0
+            ")->num_rows;
+            
+            if ($existing == 0) {
+                $this->createNotification(
+                    'pending_order',
+                    'Pending Orders',
+                    $result['count'] . ' order(s) awaiting confirmation',
+                    null,
+                    'orders',
+                    'info',
+                    'adminOrders.php?status=pending',
+                    'bx-shopping-bag'
+                );
+            }
         }
     }
     
-    private function getPendingPayments() {
+    private function checkPendingPayments() {
         $query = "
             SELECT COUNT(*) as count
             FROM payment_verifications
@@ -91,19 +146,27 @@ class AdminNotifications {
         $result = $this->conn->query($query)->fetch_assoc();
         
         if ($result['count'] > 0) {
-            $this->notifications[] = [
-                'type' => 'pending_payments',
-                'title' => 'Payment Verification',
-                'message' => $result['count'] . ' payment(s) need verification',
-                'count' => $result['count'],
-                'link' => 'adminPaymentVerification.php',
-                'icon' => 'bx-wallet-alt',
-                'severity' => 'warning'
-            ];
+            $existing = $this->conn->query("
+                SELECT notification_id FROM admin_notifications 
+                WHERE notification_type = 'pending_payment' AND is_read = 0
+            ")->num_rows;
+            
+            if ($existing == 0) {
+                $this->createNotification(
+                    'pending_payment',
+                    'Payment Verification',
+                    $result['count'] . ' payment(s) need verification',
+                    null,
+                    'payment_verifications',
+                    'warning',
+                    'adminPaymentVerification.php',
+                    'bx-wallet-alt'
+                );
+            }
         }
     }
     
-    private function getPendingPurchaseOrders() {
+    private function checkPendingPurchaseOrders() {
         $query = "
             SELECT COUNT(*) as count
             FROM purchase_orders
@@ -112,20 +175,27 @@ class AdminNotifications {
         $result = $this->conn->query($query)->fetch_assoc();
         
         if ($result['count'] > 0) {
-            $this->notifications[] = [
-                'type' => 'pending_purchases',
-                'title' => 'Purchase Orders',
-                'message' => $result['count'] . ' purchase order(s) pending',
-                'count' => $result['count'],
-                'link' => 'adminPurchaseOrders.php',
-                'icon' => 'bx-receipt',
-                'severity' => 'info'
-            ];
+            $existing = $this->conn->query("
+                SELECT notification_id FROM admin_notifications 
+                WHERE notification_type = 'pending_purchase' AND is_read = 0
+            ")->num_rows;
+            
+            if ($existing == 0) {
+                $this->createNotification(
+                    'pending_purchase',
+                    'Purchase Orders',
+                    $result['count'] . ' purchase order(s) pending',
+                    null,
+                    'purchase_orders',
+                    'info',
+                    'adminPurchaseOrders.php',
+                    'bx-receipt'
+                );
+            }
         }
     }
     
-    // ✅ NEW: Get pending cancellation requests
-    private function getPendingCancellations() {
+    private function checkPendingCancellations() {
         $query = "
             SELECT COUNT(*) as count
             FROM order_cancellations
@@ -133,26 +203,32 @@ class AdminNotifications {
         ";
         $result = $this->conn->query($query);
         
-        // Check if table exists (in case schema not run yet)
         if ($result) {
             $data = $result->fetch_assoc();
             
             if ($data['count'] > 0) {
-                $this->notifications[] = [
-                    'type' => 'pending_cancellations',
-                    'title' => 'Order Cancellations',
-                    'message' => $data['count'] . ' cancellation request(s) pending',
-                    'count' => $data['count'],
-                    'link' => 'adminIndex.php#cancellations',
-                    'icon' => 'bx-x-circle',
-                    'severity' => 'warning'
-                ];
+                $existing = $this->conn->query("
+                    SELECT notification_id FROM admin_notifications 
+                    WHERE notification_type = 'pending_cancellation' AND is_read = 0
+                ")->num_rows;
+                
+                if ($existing == 0) {
+                    $this->createNotification(
+                        'pending_cancellation',
+                        'Order Cancellations',
+                        $data['count'] . ' cancellation request(s) pending',
+                        null,
+                        'order_cancellations',
+                        'warning',
+                        'adminIndex.php#cancellations',
+                        'bx-x-circle'
+                    );
+                }
             }
         }
     }
     
-    // ✅ NEW: Get pending refund requests
-    private function getPendingRefunds() {
+    private function checkPendingRefunds() {
         $query = "
             SELECT COUNT(*) as count
             FROM order_refunds
@@ -160,22 +236,92 @@ class AdminNotifications {
         ";
         $result = $this->conn->query($query);
         
-        // Check if table exists (in case schema not run yet)
         if ($result) {
             $data = $result->fetch_assoc();
             
             if ($data['count'] > 0) {
-                $this->notifications[] = [
-                    'type' => 'pending_refunds',
-                    'title' => 'Refund Requests',
-                    'message' => $data['count'] . ' refund request(s) pending review',
-                    'count' => $data['count'],
-                    'link' => 'adminPaymentVerification.php?tab=refunds',
-                    'icon' => 'bx-undo',
-                    'severity' => 'warning'
-                ];
+                $existing = $this->conn->query("
+                    SELECT notification_id FROM admin_notifications 
+                    WHERE notification_type = 'pending_refund' AND is_read = 0
+                ")->num_rows;
+                
+                if ($existing == 0) {
+                    $this->createNotification(
+                        'pending_refund',
+                        'Refund Requests',
+                        $data['count'] . ' refund request(s) pending review',
+                        null,
+                        'order_refunds',
+                        'warning',
+                        'adminPaymentVerification.php?tab=refunds',
+                        'bx-undo'
+                    );
+                }
             }
         }
+    }
+    
+    /**
+     * Create a new notification in the database
+     */
+    private function createNotification($type, $title, $message, $related_id, $related_table, $severity, $link, $icon) {
+        $stmt = $this->conn->prepare("
+            INSERT INTO admin_notifications 
+            (notification_type, title, message, related_id, related_table, severity, link, icon)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        
+        $stmt->bind_param("ssisssss", $type, $title, $message, $related_id, $related_table, $severity, $link, $icon);
+        $stmt->execute();
+        $stmt->close();
+    }
+    
+    /**
+     * Mark notification as read
+     */
+    public function markAsRead($notification_id, $admin_email) {
+        $stmt = $this->conn->prepare("CALL mark_notification_read(?, ?)");
+        $stmt->bind_param("is", $notification_id, $admin_email);
+        $stmt->execute();
+        $stmt->close();
+    }
+    
+    /**
+     * Get all notifications (including read and unread)
+     */
+    public function getAllNotifications($limit = 50) {
+        $query = "
+            SELECT 
+                notification_id,
+                notification_type,
+                title,
+                message,
+                related_id,
+                related_table,
+                severity,
+                link,
+                icon,
+                is_read,
+                created_at,
+                read_at,
+                read_by
+            FROM admin_notifications
+            ORDER BY is_read ASC, created_at DESC
+            LIMIT ?
+        ";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $limit);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        $all_notifications = [];
+        while ($row = $result->fetch_assoc()) {
+            $all_notifications[] = $row;
+        }
+        
+        $stmt->close();
+        return $all_notifications;
     }
     
     public function getNotifications() {

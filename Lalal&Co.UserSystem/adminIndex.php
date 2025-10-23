@@ -207,9 +207,7 @@ renderAdminHeader()
     color: #f44336;
 }
 
-.card.refund-card a i {
-    color: #ff9800;
-}
+
     </style>
 </head>
 <body>
