@@ -1,0 +1,294 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            
+        }
+
+        .header {
+            position: fixed;         /* Keeps it at the top */
+            top: 0;                  /* Position from the top */
+            left: 0;
+            width: 100%;             /* Full width */
+            z-index: 1000;           /* Stays on top of other elements */
+            background: linear-gradient(90deg, #d4c4b0 0%, #e8ddd0 25%, #f0e8dc 50%, #e8ddd0 75%, #d4c4b0 100%);
+            padding: 0 40px;
+        }       
+
+
+
+        .main-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+        }
+
+        .left-section {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .logo-small {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-right: 20px;
+        }
+
+        .center-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 2;
+        }
+
+        .logo-main {
+            height: 45px;
+            object-fit: contain;
+            margin-right: 15px;
+        }
+
+        .official-store {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-left: 2px solid #333;
+            padding-left: 15px;
+            margin-left: 15px;
+        }
+
+        .official-store span {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #333;
+        }
+
+        .right-section {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+
+
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 8px 40px 8px 15px;
+            border-radius: 20px;
+            width: 200px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-input::placeholder {
+            color: #666;
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.5);
+            border-color: rgba(0, 0, 0, 0.2);
+            width: 250px;
+
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            transition: transform 0.5s;
+        }
+
+        .icon:hover {
+            transform: scale(1.1);
+        }
+
+        .icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #333;
+        }
+
+        .cart-icon {
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #333;
+            color: white;
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* Placeholder images for logos */
+        .logo-placeholder {
+            font-family: serif;
+            font-style: italic;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .logo-small-placeholder {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .logo-main-placeholder {
+            font-size: 32px;
+            letter-spacing: 3px;
+        }
+
+         .user-menu {
+          position: relative;
+          display: inline-block;
+          cursor: pointer;
+        }
+
+        .dropdown {
+          display: none;
+          position: absolute;
+          right: 0;
+          top: 50px;
+          background: white;
+          min-width: 220px;
+          box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+          border-radius: 8px;
+          overflow: hidden;
+          z-index: 1000;
+          max-height: 200px; /* scroll effect */
+          overflow-y: auto;
+        }
+
+        .dropdown div {
+          padding: 12px;
+          border-bottom: 1px solid #eee;
+        }
+
+        .dropdown div:last-child {
+          border-bottom: none;
+        }
+
+        .dropdown div:hover {
+          background: #f5f5f5;
+        }
+
+        /* Show dropdown when active */
+        .user-menu.active .dropdown {
+          display: block;
+        }
+        
+        .logout {
+            text-decoration: none;
+        }
+
+        .center-wrapper {
+        
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
+
+        .box {
+        padding: 40px;
+        border-radius: 40px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        }
+        #welcome {
+        font-size: 100px;
+        }
+        #user  {
+        font-size: 30px;
+        }
+
+
+    /* content section: use a blurred background image via a pseudo-element */
+    #content-section {
+        width: 100%;
+        min-height: 100vh;
+        position: relative;
+        background-color: #e8ddd0; /* fallback color */
+        overflow: hidden; /* contain the blurred layer */
+    }
+
+    /* blurred image layer */
+    #content-section::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("images/frontdes.jpg");
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        /* blur and slightly scale to avoid edge artifacts from blur */
+        filter: blur(20px);
+        transform: scale(1.05);
+        z-index: 0;
+        background-attachment: fixed;
+    }
+
+    /* subtle overlay on top of the blurred image */
+    #content-section::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(rgba(255,255,255,0.25), rgba(255,255,255,0.25));
+        z-index: 1;
+    }
+
+    /* ensure content sits above the blurred background */
+    #content-section .content {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Disable fixed attachment on mobile for performance and UX */
+    @media (max-width: 768px) {
+        #content-section::before {
+            background-attachment: scroll;
+            transform: scale(1); /* reduce extra scaling on small screens */
+            filter: blur(6px); /* slightly less blur for smaller viewports if desired */
+        }
+    }
+
+   
